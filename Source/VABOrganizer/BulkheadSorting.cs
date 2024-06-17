@@ -86,10 +86,11 @@ namespace VABOrganizer
         Image icon = new GameObject("Icon").AddComponent<Image>();
         RectTransform iconRect = icon.GetComponent<RectTransform>();
         
-        iconRect.transform.SetParent(child);
-        iconRect.pivot = iconRect.anchorMin = iconRect.anchorMax = Vector2.zero;
-        iconRect.offsetMin = new Vector2(12f, 0f);
-        iconRect.offsetMax = new Vector2(52f, 42f);
+        iconRect.transform.SetParent(child, false);
+        iconRect.anchorMin = iconRect.anchorMax = new Vector2 (0,1);
+        iconRect.pivot = new Vector2(0.5f, 0.5f);
+        iconRect.offsetMin = new Vector2(10f, -18f);
+        iconRect.offsetMax = new Vector2(31f, 3f);
 
         switch (child.name)
         {

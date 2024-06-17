@@ -9,6 +9,7 @@
     
     // Emit UI debug messages
     public static bool DebugUI = true;
+    public static float LabelFontSize = 9f;
 
     public static string ORGANIZER_SETTINGS_NODE_NAME = "ORGANIZERSETTINGS";
     public static string ORGANIZER_BULKHEAD_NODE_NAME = "ORGANIZERBULKHEAD";
@@ -26,6 +27,7 @@
       {
         settingsNode = settingsNodes[0];
         settingsNode.TryGetValue("DebugUI", ref DebugUI);
+        settingsNode.TryGetValue("LabelFontSize", ref LabelFontSize);
       }
       else
       {

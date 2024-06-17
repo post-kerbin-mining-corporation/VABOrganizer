@@ -84,29 +84,43 @@ namespace VABOrganizer
       Image headerBackground;
       TextMeshProUGUI headerText;
       Button headerButton;
-      
+
       headerObj = new GameObject($"PartHeader_{name}");
       headerBackground = headerObj.AddComponent<Image>();
       headerIcon = new GameObject($"PartHeaderIcon_{name}").AddComponent<Image>();
       headerText = new GameObject($"PartHeaderLabel_{name}").AddComponent<TextMeshProUGUI>();
+      headerBackground.sprite = VABOrganizerAssets.Sprites["organizer-carat2"];
+      headerBackground.type = Image.Type.Sliced;
+      headerBackground.transform.SetParent(parent, false);
+      headerBackground.color = new Color(1f, 1f, 1f, 1f);
 
       /// Set up the background/button
       headerButton = headerBackground.gameObject.AddComponent<Button>();
       headerButton.onClick.AddListener(() => OnClick());
-      headerBackground.transform.SetParent(parent, false);
-      headerBackground.color = new Color(0f, 0f, 0f, 0.3f);
+      headerButton.targetGraphic = headerBackground;
+      headerButton.transition = Selectable.Transition.ColorTint;
+      headerButton.colors = new ColorBlock()
+      {
+        colorMultiplier = 1f,
+        fadeDuration = 0.1f,
+        highlightedColor = new Color(1f, 1f, 1f, 0.4f),
+        normalColor = new Color(1f, 1f, 1f, 0.1f),
+        pressedColor = new Color(1f, 1f, 1f, 0.2f)
+      };        
+      
       RectTransform headerXform = headerBackground.GetComponent<RectTransform>();
-      headerXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 15f);
+      headerXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20f);
 
       /// Set up the text
       headerText.transform.SetParent(headerBackground.transform, false);
       RectTransform textXform = headerText.GetComponent<RectTransform>();
 
-      textXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 15f);
+      textXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20f);
       textXform.offsetMin = new Vector2(textXform.offsetMin.x + 15f, textXform.offsetMin.y);
       headerText.fontSize = 12;
       headerText.text = label;
       headerText.fontStyle = FontStyles.Bold;
+      headerText.margin = new Vector4(0, 4, 0, 2);
 
       SetCategoryVisible(false);
       /// Set up the carat icon
@@ -114,8 +128,8 @@ namespace VABOrganizer
       headerIcon.transform.SetParent(headerBackground.transform, false);
       RectTransform headerIconXform = headerIcon.GetComponent<RectTransform>();
       headerIconXform.anchorMin = headerIconXform.anchorMax = headerIconXform.pivot = Vector2.zero;
-      headerIconXform.offsetMin = new Vector2(3, 3);
-      headerIconXform.offsetMax = new Vector2(12, 12);
+      headerIconXform.offsetMin = new Vector2(5, 7);
+      headerIconXform.offsetMax = new Vector2(13, 14);
     }
 
     /// <summary>

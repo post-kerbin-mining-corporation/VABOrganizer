@@ -35,7 +35,7 @@ namespace VABOrganizer
       TextMeshProUGUI textObj = new GameObject("Tag").AddComponent<TextMeshProUGUI>();
       
       textObj.text = GetText(part);
-      textObj.fontSize = 8;
+      textObj.fontSize = Settings.LabelFontSize;
       textObj.margin = new Vector4(4, 2, 3, 0);
       textObj.overflowMode = TextOverflowModes.Truncate;
       textObj.gameObject.SetLayerRecursive(LayerMask.NameToLayer("UI"));
@@ -55,7 +55,7 @@ namespace VABOrganizer
     static Color GetColor(AvailablePart part)
     {
       Color c = part.MaxSizeBulkheadData().Color;
-      c.a = 0.3f;
+      c.a = 0.4f;
       return c;
     }
   }
