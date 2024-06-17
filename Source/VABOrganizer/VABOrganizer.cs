@@ -1,14 +1,6 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using KSP.UI;
-using KSP.UI.TooltipTypes;
-using KSP.UI.Screens;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
 
 namespace VABOrganizer
 {
@@ -24,26 +16,32 @@ namespace VABOrganizer
     }
   }
 
+  /// <summary>
+  /// Manange loading up the assets
+  /// </summary>
   [KSPAddon(KSPAddon.Startup.Instantly, true)]
   public class VABOrganizerAssets : MonoBehaviour
   {
     public static Dictionary<string,Sprite> Sprites { get; private set; }
-    
+
+    internal static string ASSET_PATH = "GameData/VABOrganizer/Assets/vaborganizer.dat";
+    internal static string SPRITE_ATLAS_NAME = "vaborganizer";
+
     private void Awake()
     {
 
-      Utils.Log("[UILoader]: Loading UI Prefabs");
-      AssetBundle prefabs = AssetBundle.LoadFromFile(Path.Combine(KSPUtil.ApplicationRootPath, "GameData/VABOrganizer/Assets/vaborganizer.dat"));
+      Utils.Log("[Assets]: Loading UI Prefabs");
+      AssetBundle prefabs = AssetBundle.LoadFromFile(Path.Combine(KSPUtil.ApplicationRootPath, ASSET_PATH));
 
 
-      Sprite[] spriteSheet = prefabs.LoadAssetWithSubAssets<Sprite>("vab-organizer");
+      Sprite[] spriteSheet = prefabs.LoadAssetWithSubAssets<Sprite>(SPRITE_ATLAS_NAME);
       Sprites = new Dictionary<string, Sprite>();
       foreach (Sprite subSprite in spriteSheet)
       {
         Sprites.Add(subSprite.name, subSprite);
       }
       
-      Utils.Log("[UILoader]: Loaded UI Prefabs");
+      Utils.Log("[Assets]: Loaded UI Prefabs");
     }
   }
 }

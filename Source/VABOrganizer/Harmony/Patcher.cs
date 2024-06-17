@@ -8,10 +8,10 @@ namespace VABOrganizer.HarmonyPatches
   {
     public void Start()
     {
-      Utils.Log("Starting Harmony patching...");
+      Utils.Log("[Harmony] Start Patching");
       var harmony = new Harmony("VABOrganizer");
       harmony.PatchAll();
-      Utils.Log("Harmony patching complete");
+      Utils.Log("[Harmony] Patching complete");
     }
   }
 }

@@ -7,9 +7,8 @@ namespace VABOrganizer.HarmonyPatches
   [HarmonyPatch(typeof(EditorPartIcon))]
   public class PatchEditorPartIcon
   {
-
     /// <summary>
-    /// public void Create(EditorPartList partList, AvailablePart part, StoredPart sPart, float iconSize, float iconOverScale, float iconOverSpin, Callback<EditorPartIcon> placePartCallback, bool btnPlacePartActive, bool skipVariants, PartVariant variant, bool useImageThumbnail, bool inInventory)
+    /// Patch the icon creation process to add the part visual tag
     /// </summary>
     /// <param name="__instance"></param>
     [HarmonyPostfix]

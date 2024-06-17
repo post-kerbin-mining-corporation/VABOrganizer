@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
-using KSP.UI;
-using KSP.UI.Screens;
 using TMPro;
+using KSP.UI.Screens;
+using KSP.Localization;
 
 
 namespace VABOrganizer
@@ -15,6 +14,7 @@ namespace VABOrganizer
   {
     public string name;
     public string label;
+    public float priority = 0f;
     protected GameObject gridObj;
     protected GameObject headerObj;
 
@@ -38,36 +38,35 @@ namespace VABOrganizer
 
     public void Load(ConfigNode node) 
     {
-      
       validParts = new List<string>();
       validPaths = new List<string>();
       validRegex = new List<string>();
       node.TryGetValue("name", ref name);
       node.TryGetValue("Label", ref label);
+      node.TryGetValue("Priority", ref priority);
+
+      label = Localizer.Format(label);
 
       validParts = node.GetValues("part").ToList();
       validPaths = node.GetValues("path").ToList();
       validRegex = node.GetValues("regex").ToList();
-
     }
 
+    /// <summary>
+    /// Build the UI for this category
+    /// </summary>
+    /// <param name="parent"></param>
+    /// <param name="templatePartGrid"></param>
     public void Build(RectTransform parent, GridLayoutGroup templatePartGrid)
     {
       if (parent.gameObject.GetChild($"PartHeader_{name}") == null)
       {
-
-        Debug.Log($"Creating new category {name}");
         BuildHeader(parent);
 
         Debug.Log($"Setting up grids for new category {name}");
         gridObj = GameObject.Instantiate(templatePartGrid.gameObject);
         gridObj.transform.SetParent(parent.transform, false);
         gridObj.name = $"PartGrid_{name}";
-
-        //ContentSizeFitter fitter = gridObj.AddComponent<ContentSizeFitter>();
-        //fitter.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
-        //fitter.horizontalFit = ContentSizeFitter.FitMode.Unconstrained;
-
         gridTransform = gridObj.transform;
       }
       else
@@ -76,13 +75,16 @@ namespace VABOrganizer
       }
     }
 
+    /// <summary>
+    /// Build the header for this category
+    /// </summary>
+    /// <param name="parent"></param>
     protected void BuildHeader(RectTransform parent)
     {
       Image headerBackground;
       TextMeshProUGUI headerText;
       Button headerButton;
-
-      Debug.Log($"Creating new category header for {name}");
+      
       headerObj = new GameObject($"PartHeader_{name}");
       headerBackground = headerObj.AddComponent<Image>();
       headerIcon = new GameObject($"PartHeaderIcon_{name}").AddComponent<Image>();
@@ -131,7 +133,7 @@ namespace VABOrganizer
     }
     public bool TryAssignPart(EditorPartIcon icon, AvailablePart part)
     {
-      // Put the underscores back
+      // Put the underscores back 
       bool passedName = validParts.Contains(part.name.Replace('.', '_'));
       bool passedRegex = false;
       bool passedRegexPath = false;
@@ -172,7 +174,6 @@ namespace VABOrganizer
     }
     public void ClearParts()
     {
-      Debug.Log("Cleared");
       categoryEmpty = true;
       SetCategoryVisible(false);
     }

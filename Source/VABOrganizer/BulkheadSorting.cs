@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using KSP.UI;
 using KSP.UI.TooltipTypes;
+using KSP.Localization;
 
 namespace VABOrganizer
 {
@@ -42,7 +43,6 @@ namespace VABOrganizer
       GameObject sortByNameButton = sorterBase.gameObject.GetChild("StateButtonName");
       if (!sorterBase.gameObject.GetChild("StateButtonProfile"))
       {
-        Utils.Log("Time to create the profile sorter");
         GameObject sortByProfileButton = GameObject.Instantiate(sortByNameButton);
         sortByProfileButton.transform.SetParent(sorterBase.transform, false);
 
@@ -51,20 +51,21 @@ namespace VABOrganizer
         TextMeshProUGUI sortingText = sortByProfileButton.GetChild("Text").GetComponent<TextMeshProUGUI>();
         UIStateImage sortingStateImage = sortByProfileButton.GetChild("StateImageName").GetComponent<UIStateImage>();
         sortingButton.onClick.RemoveAllListeners();
+        sortingButton.onClick = new Button.ButtonClickedEvent();
         sortingButton.onClick.AddListener(() => sorterBase.ClickButton(4));
         sortingText.text = "Profile";
-        tooltip.textString = "Sort By Profile";
+        tooltip.textString = Localizer.Format("#LOC_VABOrganizer_BulkheadSortTooltip");
         sortByProfileButton.name = "StateButtonProfile";
         sortingStateImage.name = "StateImageProfile";
 
         Array.Resize(ref sorterBase.sortingButtonStates, sorterBase.sortingButtonStates.Length + 1);
         sorterBase.sortingButtonStates[4] = sortingStateImage;
         sorterBase.startSortingMode = sortingStateImage;
-        Utils.Log("Created a new sorter");
+        sorterBase.startSortingAsc = true;
       }
       else
       {
-        Utils.Log("Sorter exists");
+        /// maybe throw warning later
       }
       RestyleButtons(sorterBase.transform);
     }
@@ -78,7 +79,6 @@ namespace VABOrganizer
       }
       foreach (Transform child in targetButtons)
       {
-        
         RectTransform textObj = (RectTransform)child.gameObject.GetChild("Text").transform;
         RectTransform stateIconRect = (RectTransform)child.gameObject.GetChild("Text").transform;
         textObj.gameObject.SetActive(false);
@@ -112,9 +112,10 @@ namespace VABOrganizer
       }
       HorizontalLayoutGroup hlg = sorterBase.gameObject.AddComponent<HorizontalLayoutGroup>();
       ContentSizeFitter fitter = sorterBase.gameObject.AddComponent<ContentSizeFitter>();
-
-      hlg.childControlWidth = false;
+     
+      hlg.childControlWidth = true;
       hlg.childForceExpandWidth = false;
+      hlg.spacing = 45;
       fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
     }
   }

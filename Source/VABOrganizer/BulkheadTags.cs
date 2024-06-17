@@ -7,7 +7,6 @@ namespace VABOrganizer
 {
   public static class BulkheadTags
   {
-
     /// <summary>
     /// Creates the colored and labeled bulkhead tag on the part icon
     /// </summary>
@@ -33,7 +32,7 @@ namespace VABOrganizer
       rect.offsetMin = new Vector2(0, 52);
       rect.offsetMax = new Vector2(27, 66);
 
-      TMPro.TextMeshProUGUI textObj = new GameObject("Tag").AddComponent<TextMeshProUGUI>();
+      TextMeshProUGUI textObj = new GameObject("Tag").AddComponent<TextMeshProUGUI>();
       
       textObj.text = GetText(part);
       textObj.fontSize = 8;

@@ -1,38 +1,5 @@
-﻿using UnityEngine;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VABOrganizer
+﻿namespace VABOrganizer
 {
-  public class BulkheadData
-  {
-    public string Name;
-    public string Label;
-    public float Size;
-    public Color Color;
-
-    public BulkheadData()
-    {
-      Name = "UNK";
-      Label = "";
-      Size = 1000;
-      Color = new Color(0,0,0,0);
-    }
-    public BulkheadData(ConfigNode configNode)
-    {
-      Load(configNode);
-    }
-    public void Load(ConfigNode configNode)
-    {
-      configNode.TryGetValue("name", ref Name);
-      configNode.TryGetValue("Label", ref Label); ;
-      configNode.TryGetValue("Size", ref Size);
-      configNode.TryGetValue("Color", ref Color);
-    }
-  }
 
   /// <summary>
   /// Static class to hold settings and configuration

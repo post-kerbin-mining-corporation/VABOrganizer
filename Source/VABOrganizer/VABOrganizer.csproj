@@ -76,6 +76,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkheadData.cs" />
     <Compile Include="BulkheadSorting.cs" />
     <Compile Include="BulkheadTags.cs" />
     <Compile Include="Harmony\EditorPartList.cs" />
