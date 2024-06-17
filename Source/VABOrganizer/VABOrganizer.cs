@@ -25,7 +25,7 @@ namespace VABOrganizer
     public static Dictionary<string,Sprite> Sprites { get; private set; }
 
     internal static string ASSET_PATH = "GameData/VABOrganizer/Assets/vaborganizer.dat";
-    internal static string SPRITE_ATLAS_NAME = "vaborganizer";
+    internal static string SPRITE_ATLAS_NAME = "vab-organizer";
 
     private void Awake()
     {
