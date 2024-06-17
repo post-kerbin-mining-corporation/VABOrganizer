@@ -42,7 +42,7 @@ ORGANIZERSUBCATEGORY
 {
   name = landers
   Label = Landers + Probes
-  // patpart names to include. this is a regex mach against the part name
+  // part names to include. this is a regex mach against the part name
   regex = probe
   regex = lander
 }
