@@ -28,6 +28,34 @@ NOTE: Do NOT rename or move folders within the GameData folder - this mod uses a
 
 I certainly accept pull requests. Please target all such things to the `dev` branch though!
 
+Currently, subcategories can use any/all of the following ways to define parts to include.
+```
+ORGANIZERSUBCATEGORY
+{
+  name = pods
+  Label = Pods
+  // part names to include. This is an exact match against the part name. 
+  part = cupola
+  part = landerCabinSmall
+}
+ORGANIZERSUBCATEGORY
+{
+  name = landers
+  Label = Landers + Probes
+  // patpart names to include. this is a regex mach against the part name
+  regex = probe
+  regex = lander
+}
+ORGANIZERSUBCATEGORY
+{
+  name = probes
+  Label = Probes
+  // paths to include. this is a regex mach against the PartURL variable
+  path = Squad/Parts/Command/mk1Cockpits
+  path = Squad/Parts/Command/MpoProbe
+}
+```
+
 ## Licensing
 
 MIT license:
