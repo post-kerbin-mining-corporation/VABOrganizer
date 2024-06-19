@@ -7,7 +7,6 @@ using KSP.Localization;
 
 namespace VABOrganizer
 {
-
   public class SubcategorySorting 
   {
     public static List<Subcategory> Subcategories = new List<Subcategory>();

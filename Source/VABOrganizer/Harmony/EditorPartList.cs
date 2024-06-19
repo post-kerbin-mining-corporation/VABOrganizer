@@ -55,6 +55,18 @@ namespace VABOrganizer.HarmonyPatches
       SubcategorySorting.Refresh();
       return true;
     }
+    /// <summary>
+    /// Patch the part list refresh to also refresh subcategories
+    /// </summary>
+    /// <param name="__instance"></param>
+    /// <returns></returns>
+    [HarmonyPrefix]
+    [HarmonyPatch("RefreshSearchList")]
+    internal static bool PatchRefreshSearchList(EditorPartList __instance)
+    {
+      SubcategorySorting.Refresh();
+      return true;
+    }
 
     /// <summary>
     /// Patch the icon update to force a layout rebuild because scrollrects and layouts suck

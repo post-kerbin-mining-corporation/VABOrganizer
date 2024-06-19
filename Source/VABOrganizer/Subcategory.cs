@@ -63,7 +63,6 @@ namespace VABOrganizer
       {
         BuildHeader(parent);
 
-        Debug.Log($"Setting up grids for new category {name}");
         gridObj = GameObject.Instantiate(templatePartGrid.gameObject);
         gridObj.transform.SetParent(parent.transform, false);
         gridObj.name = $"PartGrid_{name}";
