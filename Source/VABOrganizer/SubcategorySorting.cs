@@ -59,6 +59,7 @@ namespace VABOrganizer
     /// </summary>
     public static void Refresh()
     {
+      Debug.Log("[Subcategories] Cleared all parts");
       foreach (Subcategory sub in Subcategories)
       {
         sub.ClearParts();
