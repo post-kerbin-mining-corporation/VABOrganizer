@@ -167,13 +167,18 @@ namespace VABOrganizer
         AssignPart(icon);
         return true;
       }
-      string parsedCatgeory = "";
-      if (part.partConfig.TryGetValue("organizerSubcategory", ref parsedCatgeory))
+      
+      ConfigNode dataNode = new ConfigNode();
+      if (part.partConfig.TryGetNode("VABORGANIZER", ref dataNode))
       {
-        if (name == parsedCatgeory)
+        string parsedCategory = "";
+        if (dataNode.TryGetValue("organizerSubcategory", ref parsedCategory))
         {
-          AssignPart(icon);
-          return true;
+          if (name == parsedCategory)
+          {
+            AssignPart(icon);
+            return true;
+          }
         }
       }
       
