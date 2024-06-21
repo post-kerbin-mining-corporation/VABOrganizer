@@ -1,0 +1,24 @@
+mod-name: SpaceDust
+package:
+  include-dependencies: true  # Include dependencies in the package
+  included-gamedata:
+    - VABOrganizer
+  included-support:  # Include these root-level files in packages
+    - readme.txt
+    - changelog.txt
+dependencies:  # Configure dependencies
+  ModuleManager:
+    version: 4.2.3
+    location: s3
+  HarmonyKSP:
+    version: 2.2.1
+    location: s3
+deploy:
+  SpaceDock:
+    enabled: true  # activate/deactivate this deployment script
+    mod-id: 2602  # The Spacedock mod ID for deployment
+  CurseForge:
+    enabled: true  # activate/deactivate this deployment script
+    mod-id: 432199  # The CurseForge mod ID for deployment
+  GitHub:
+    enabled: true  # activate/deactivate this deployment script
