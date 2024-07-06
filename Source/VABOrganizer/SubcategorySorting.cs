@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using KSP.UI.Screens;
-using KSP.Localization;
 
 
 namespace VABOrganizer
@@ -26,12 +26,12 @@ namespace VABOrganizer
           Subcategory subcat = new Subcategory(subcatNode);
           Subcategories.Add(subcat);
         }
-        Subcategories.Sort((x, y) => x.priority.CompareTo(y.priority));
+        Subcategories = Subcategories.OrderBy(x => x.CategoryPriority).ThenBy(x => x.Priority).ToList();
+        //Subcategories.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         Utils.Log($"[Subcategory Sorting]: Loaded {Subcategories.Count} subcategory definitions");
       }
       Subcategory miscCat = new Subcategory();
-      miscCat.name = "misc";
-      miscCat.label = Localizer.Format("#LOC_VABOrganizer_Subcategory_misc");
+      miscCat.SetDummyCategory();
       Subcategories.Add(miscCat);
     }
 
@@ -48,11 +48,11 @@ namespace VABOrganizer
         if (sub.TryAssignPart(icon, availablePart))
           isAssigned = true;
       }
+      /// Put it in misc
       if (!isAssigned)
       {
         Subcategories[Subcategories.Count-1].AssignPart(icon);
       }
-      
     }
     /// <summary>
     /// Clear the subcategory part sets when needed

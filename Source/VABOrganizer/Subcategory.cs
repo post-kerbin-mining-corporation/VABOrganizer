@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using KSP.UI.Screens;
@@ -10,14 +7,43 @@ using KSP.Localization;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// 
+  /// </summary>
   public class Subcategory
   {
-    public string name;
-    public string label;
-    public float priority = 0f;
+    public string Name
+    {
+      get { return name; }
+      private set { name = value; }
+    }
+    /// <summary>
+    /// Localized category name
+    /// </summary>
+    public string Label
+    {
+      get { return label; }
+      private set { label = value; }
+    }
+    /// <summary>
+    /// The priority within a category
+    /// </summary>
+    public float Priority
+    {
+      get { return priority; }
+      private set { priority = value; }
+    }
+    /// <summary>
+    /// The priority in a multicategory situation
+    /// </summary>
+    public float CategoryPriority
+    {
+      get { return categoryPriority; }
+      private set { categoryPriority = value; }
+    }
+
     protected GameObject gridObj;
     protected GameObject headerObj;
-
     protected Image headerIcon;
     protected Transform gridTransform;
 
@@ -25,9 +51,10 @@ namespace VABOrganizer
     protected bool categoryActive = true;
     protected bool categoryEmpty = true;
 
-    protected List<string> validParts = new List<string>();
-    protected List<string> validPaths = new List<string>();
-    protected List<string> validRegex = new List<string>();
+    private string name = "category";
+    private string label = "label";
+    private float priority = 0f;
+    private float categoryPriority = 0f;
 
     public Subcategory() { }
 
@@ -36,20 +63,14 @@ namespace VABOrganizer
       Load(node);
     }
 
-    public void Load(ConfigNode node) 
+    public void Load(ConfigNode node)
     {
-      validParts = new List<string>();
-      validPaths = new List<string>();
-      validRegex = new List<string>();
       node.TryGetValue("name", ref name);
       node.TryGetValue("Label", ref label);
       node.TryGetValue("Priority", ref priority);
+      node.TryGetValue("CategoryPriority", ref categoryPriority);
 
       label = Localizer.Format(label);
-
-      validParts = node.GetValues("part").ToList();
-      validPaths = node.GetValues("path").ToList();
-      validRegex = node.GetValues("regex").ToList();
     }
 
     /// <summary>
@@ -105,8 +126,8 @@ namespace VABOrganizer
         highlightedColor = new Color(1f, 1f, 1f, 0.4f),
         normalColor = new Color(1f, 1f, 1f, 0.1f),
         pressedColor = new Color(1f, 1f, 1f, 0.2f)
-      };        
-      
+      };
+
       RectTransform headerXform = headerBackground.GetComponent<RectTransform>();
       headerXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20f);
 
@@ -130,7 +151,15 @@ namespace VABOrganizer
       headerIconXform.offsetMin = new Vector2(5, 7);
       headerIconXform.offsetMax = new Vector2(13, 14);
     }
-
+    /// <summary>
+    /// Sets that this is a dummy category 
+    /// </summary>
+    /// <param name="shown"></param>
+    public void SetDummyCategory()
+    {
+      Name = "misc";
+      Label = Localizer.Format("#LOC_VABOrganizer_Subcategory_misc");
+    }
     /// <summary>
     /// Sets whether we can see a category at all
     /// </summary>
@@ -138,38 +167,22 @@ namespace VABOrganizer
     public void SetCategoryVisible(bool shown)
     {
       categoryVisible = shown;
+
       if (headerObj)
+      {
         headerObj.SetActive(categoryVisible);
+      }
+
       if (gridObj)
-        gridObj.SetActive(categoryVisible);
+      {
+        gridObj.SetActive(categoryVisible && categoryActive);
+      }
 
     }
     public bool TryAssignPart(EditorPartIcon icon, AvailablePart part)
     {
-      // Put the underscores back 
-      bool passedName = validParts.Contains(part.name.Replace('.', '_'));
-      bool passedRegex = false;
-      bool passedRegexPath = false;
-
-      foreach (string expr in validRegex)
-      {
-        if (Regex.IsMatch(part.name, expr))
-          passedRegex = true;
-      }
-      foreach (string expr in validPaths)
-      {
-        if (Regex.IsMatch(part.partUrl, expr))
-          passedRegexPath = true;
-      }
-
-      if (passedName | passedRegex | passedRegexPath)
-      {
-        AssignPart(icon);
-        return true;
-      }
-      
       ConfigNode dataNode = new ConfigNode();
-      if (part.partConfig.TryGetNode("VABORGANIZER", ref dataNode))
+      if (part.partConfig.TryGetNode(Settings.ORGANIZER_PART_ASSIGNMENT_NAME, ref dataNode))
       {
         string parsedCategory = "";
         if (dataNode.TryGetValue("organizerSubcategory", ref parsedCategory))
@@ -181,7 +194,7 @@ namespace VABOrganizer
           }
         }
       }
-      
+
       return false;
     }
     public void AssignPart(EditorPartIcon icon)
