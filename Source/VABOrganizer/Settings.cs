@@ -7,7 +7,7 @@
   public static class Settings
   {
     
-    // Emit UI debug messages
+    // Emit debug messages
     public static bool DebugMode = true;
     public static float LabelFontSize = 9f;
 
