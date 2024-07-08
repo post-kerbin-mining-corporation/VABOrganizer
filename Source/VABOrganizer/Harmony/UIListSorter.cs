@@ -3,12 +3,14 @@ using HarmonyLib;
 
 namespace VABOrganizer.HarmonyPatches
 {
-  /// <summary>
-  /// Patch the sorter UI to generate the AI when everything else gets created
-  /// </summary>
   [HarmonyPatch(typeof(UIListSorter))]
   internal class PatchUIListSorter
   {
+    /// <summary>
+    /// Patch the sorter UI to replace it with icons
+    /// </summary>
+    /// <param name="__instance"></param>
+    /// <returns></returns>
     [HarmonyPrefix]
     [HarmonyPatch("Start")]
     internal static bool PatchStart(UIListSorter __instance)

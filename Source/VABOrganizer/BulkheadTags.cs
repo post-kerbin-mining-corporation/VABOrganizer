@@ -5,6 +5,9 @@ using KSP.UI.Screens;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// Manages the tags on part icons for bulkhead sizes
+  /// </summary>
   public static class BulkheadTags
   {
     /// <summary>
@@ -48,14 +51,25 @@ namespace VABOrganizer
       rect.offsetMax = new Vector2(16, 64);
     }
 
+    /// <summary>
+    /// Get the text string for the tag
+    /// </summary>
+    /// <param name="part"></param>
+    /// <returns></returns>
     static string GetText(AvailablePart part)
     {
       return $"{part.MaxSizeBulkheadData().Label}";
     }
+
+    /// <summary>
+    /// Get the color for the tag
+    /// </summary>
+    /// <param name="part"></param>
+    /// <returns></returns>
     static Color GetColor(AvailablePart part)
     {
       Color c = part.MaxSizeBulkheadData().Color;
-      c.a = 0.4f;
+      c.a = Settings.LabelAlpha;
       return c;
     }
   }

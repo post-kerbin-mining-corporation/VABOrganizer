@@ -9,10 +9,18 @@ using KSP.Localization;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// Manages the sorting by bulkhead
+  /// </summary>
   public static class BulkheadSorting
   {
     public static Dictionary<string, BulkheadData> BulkheadMap = new Dictionary<string, BulkheadData>();
 
+    const string BULKHEAD_SORT_KEY = "#LOC_VABOrganizer_BulkheadSortTooltip";
+
+    /// <summary>
+    /// Load data from config
+    /// </summary>
     public static void Load()
     {
       ConfigNode[] bulkheadNodes = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_BULKHEAD_NODE_NAME);
@@ -36,9 +44,11 @@ namespace VABOrganizer
       }
     }
 
+    /// <summary>
+    /// Creates the sorting UI
+    /// </summary>
     public static void CreateVABSortUI()
     {
-
       UIListSorter sorterBase = GameObject.FindObjectOfType<UIListSorter>();
       GameObject sortByNameButton = sorterBase.gameObject.GetChild("StateButtonName");
       if (!sorterBase.gameObject.GetChild("StateButtonProfile"))
@@ -54,7 +64,7 @@ namespace VABOrganizer
         sortingButton.onClick = new Button.ButtonClickedEvent();
         sortingButton.onClick.AddListener(() => sorterBase.ClickButton(4));
         sortingText.text = "Profile";
-        tooltip.textString = Localizer.Format("#LOC_VABOrganizer_BulkheadSortTooltip");
+        tooltip.textString = Localizer.Format(BULKHEAD_SORT_KEY);
         sortByProfileButton.name = "StateButtonProfile";
         sortingStateImage.name = "StateImageProfile";
 
@@ -70,6 +80,10 @@ namespace VABOrganizer
       RestyleButtons(sorterBase.transform);
     }
 
+    /// <summary>
+    /// Rebuilds the sort button array to use icons instead of text and adds a bulkhead one
+    /// </summary>
+    /// <param name="sorterBase"></param>
     public static void RestyleButtons(Transform sorterBase)
     {
       List<Transform> targetButtons = new List<Transform>();

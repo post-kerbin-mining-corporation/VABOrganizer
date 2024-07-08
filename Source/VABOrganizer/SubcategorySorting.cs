@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using KSP.UI.Screens;
 
-
 namespace VABOrganizer
 {
   public class SubcategorySorting 

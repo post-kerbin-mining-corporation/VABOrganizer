@@ -4,11 +4,10 @@ using TMPro;
 using KSP.UI.Screens;
 using KSP.Localization;
 
-
 namespace VABOrganizer
 {
   /// <summary>
-  /// 
+  /// Represents a UI subcategory
   /// </summary>
   public class Subcategory
   {
@@ -42,6 +41,15 @@ namespace VABOrganizer
       private set { categoryPriority = value; }
     }
 
+    protected const string NODE_NAME = "name";
+    protected const string NODE_LABEL = "Label";
+    protected const string NODE_PRIORITY = "Priority";
+    protected const string NODE_CATEGORY_PRIORITY = "CategoryPriority";
+    protected const string NODE_PART_BLOCK_NAME = "VABORGANIZER";
+    protected const string NODE_PART_FIELD_NAME = "organizerSubcategory";
+    protected const string MISC_CATEGORY_NAME = "misc";
+    protected const string MISC_CATEGORY_KEY = "#LOC_VABOrganizer_Subcategory_misc";
+
     protected GameObject gridObj;
     protected GameObject headerObj;
     protected Image headerIcon;
@@ -65,10 +73,10 @@ namespace VABOrganizer
 
     public void Load(ConfigNode node)
     {
-      node.TryGetValue("name", ref name);
-      node.TryGetValue("Label", ref label);
-      node.TryGetValue("Priority", ref priority);
-      node.TryGetValue("CategoryPriority", ref categoryPriority);
+      node.TryGetValue(NODE_NAME, ref name);
+      node.TryGetValue(NODE_LABEL, ref label);
+      node.TryGetValue(NODE_PRIORITY, ref priority);
+      node.TryGetValue(NODE_CATEGORY_PRIORITY, ref categoryPriority);
 
       label = Localizer.Format(label);
     }
@@ -151,15 +159,17 @@ namespace VABOrganizer
       headerIconXform.offsetMin = new Vector2(5, 7);
       headerIconXform.offsetMax = new Vector2(13, 14);
     }
+
     /// <summary>
     /// Sets that this is a dummy category 
     /// </summary>
     /// <param name="shown"></param>
     public void SetDummyCategory()
     {
-      Name = "misc";
-      Label = Localizer.Format("#LOC_VABOrganizer_Subcategory_misc");
+      Name = MISC_CATEGORY_NAME;
+      Label = Localizer.Format(MISC_CATEGORY_KEY);
     }
+
     /// <summary>
     /// Sets whether we can see a category at all
     /// </summary>
@@ -177,15 +187,21 @@ namespace VABOrganizer
       {
         gridObj.SetActive(categoryVisible && categoryActive);
       }
-
     }
+
+    /// <summary>
+    /// Try to assign a part with a given icon to a subcategory. If no loaded category is relevant, return false
+    /// </summary>
+    /// <param name="icon"></param>
+    /// <param name="part"></param>
+    /// <returns></returns>
     public bool TryAssignPart(EditorPartIcon icon, AvailablePart part)
     {
       ConfigNode dataNode = new ConfigNode();
-      if (part.partConfig.TryGetNode(Settings.ORGANIZER_PART_ASSIGNMENT_NAME, ref dataNode))
+      if (part.partConfig.TryGetNode(NODE_PART_BLOCK_NAME, ref dataNode))
       {
         string parsedCategory = "";
-        if (dataNode.TryGetValue("organizerSubcategory", ref parsedCategory))
+        if (dataNode.TryGetValue(NODE_PART_FIELD_NAME, ref parsedCategory))
         {
           if (name == parsedCategory)
           {
@@ -194,21 +210,31 @@ namespace VABOrganizer
           }
         }
       }
-
       return false;
     }
+
+    /// <summary>
+    /// Assign a part icon to a subcategory
+    /// </summary>
+    /// <param name="icon"></param>
     public void AssignPart(EditorPartIcon icon)
     {
       categoryEmpty = false;
       icon.transform.SetParent(gridTransform, false);
       SetCategoryVisible(true);
     }
+    /// <summary>
+    /// Clear all parts from this subcategory
+    /// </summary>
     public void ClearParts()
     {
       categoryEmpty = true;
       SetCategoryVisible(false);
     }
 
+    /// <summary>
+    /// Delegate to minimize subcategory on button click
+    /// </summary>
     public void OnClick()
     {
       if (categoryVisible)

@@ -3,11 +3,26 @@ using KSP.Localization;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// Represents data for a bulkhead tag
+  /// </summary>
   public class BulkheadData
   {
+    /// <summary>
+    /// The name
+    /// </summary>
     public string Name;
+    /// <summary>
+    /// The localized tag for the label
+    /// </summary>
     public string Label;
+    /// <summary>
+    /// The size in meteres of the bulkhead - used for sorting
+    /// </summary>
     public float Size;
+    /// <summary>
+    /// The color for tags of this bulkhead type
+    /// </summary>
     public Color Color;
 
     public BulkheadData()

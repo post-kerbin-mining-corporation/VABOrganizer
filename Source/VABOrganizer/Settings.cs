@@ -6,12 +6,16 @@
   /// </summary>
   public static class Settings
   {
-    
-    // Emit debug messages
+    /// <summary>
+    /// If true, Log messages will be printed to log
+    /// </summary>
     public static bool DebugMode = true;
+    /// <summary>
+    /// Size of the font on tags
+    /// </summary>
     public static float LabelFontSize = 9f;
+    public static float LabelAlpha = 0.4f;
 
-    public static string ORGANIZER_PART_ASSIGNMENT_NAME = "VABORGANIZER";
     public static string ORGANIZER_SETTINGS_NODE_NAME = "ORGANIZERSETTINGS";
     public static string ORGANIZER_BULKHEAD_NODE_NAME = "ORGANIZERBULKHEAD";
     public static string ORGANIZER_SUBCATEGORY_NODE_NAME = "ORGANIZERSUBCATEGORY";
@@ -29,6 +33,7 @@
         settingsNode = settingsNodes[0];
         settingsNode.TryGetValue("DebugMode", ref DebugMode);
         settingsNode.TryGetValue("LabelFontSize", ref LabelFontSize);
+        settingsNode.TryGetValue("LabelAlpha", ref LabelAlpha);
       }
       else
       {

@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// Main addon startup
+  /// </summary>
   [KSPAddon(KSPAddon.Startup.EditorAny, true)]
   public class VABOrganizer : MonoBehaviour
   {
@@ -29,13 +32,12 @@ namespace VABOrganizer
 
     private void Awake()
     {
-
       Utils.Log("[Assets]: Loading UI Prefabs");
       AssetBundle prefabs = AssetBundle.LoadFromFile(Path.Combine(KSPUtil.ApplicationRootPath, ASSET_PATH));
 
-
       Sprite[] spriteSheet = prefabs.LoadAssetWithSubAssets<Sprite>(SPRITE_ATLAS_NAME);
       Sprites = new Dictionary<string, Sprite>();
+
       foreach (Sprite subSprite in spriteSheet)
       {
         Sprites.Add(subSprite.name, subSprite);

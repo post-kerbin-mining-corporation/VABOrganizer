@@ -3,9 +3,16 @@ using System.Linq;
 
 namespace VABOrganizer
 {
+  /// <summary>
+  /// Extension for AvailablePart
+  /// </summary>
   public static class AvailablePartExtension
   {
-    
+    /// <summary>
+    /// Get the maximum size bulkhead data assoicated with a part
+    /// </summary>
+    /// <param name="instance"></param>
+    /// <returns></returns>
     public static BulkheadData MaxSizeBulkheadData(this AvailablePart instance)
     {
       BulkheadData dataToReturn = new BulkheadData();
@@ -28,7 +35,6 @@ namespace VABOrganizer
         }
       }
       return dataToReturn;
-    
     }
   }
 }
