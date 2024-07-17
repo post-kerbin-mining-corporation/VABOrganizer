@@ -10,6 +10,17 @@ namespace VABOrganizer
   /// </summary>
   public static class BulkheadTags
   {
+
+    internal static Vector2 swatchVABOffsetMin = new Vector2(0, 52);
+    internal static Vector2 swatchVABOffsetMax = new Vector2(27, 66);
+    internal static Vector2 swatchRDOffsetMin = new Vector2(0, 33);
+    internal static Vector2 swatchRDOffsetMax = new Vector2(21, 50);
+
+    internal static Vector2 textVABOffsetMin = new Vector2(3, 48);
+    internal static Vector2 textVABOffsetMax = new Vector2(16, 64);
+    internal static Vector2 textRDOffsetMin = new Vector2(3, 37);
+    internal static Vector2 textRDOffsetMax = new Vector2(12, 50);
+
     /// <summary>
     /// Creates the colored and labeled bulkhead tag on the part icon
     /// </summary>
@@ -26,29 +37,51 @@ namespace VABOrganizer
       swatch.transform.SetParent(icon.gameObject.transform, false);
       ContentSizeFitter csf = swatch.gameObject.AddComponent<ContentSizeFitter>();
       VerticalLayoutGroup vlg = swatch.gameObject.AddComponent<VerticalLayoutGroup>();
-      vlg.childControlWidth  = true;
+      vlg.childControlWidth = true;
       vlg.childForceExpandHeight = vlg.childForceExpandWidth = vlg.childScaleHeight = vlg.childScaleWidth = vlg.childControlHeight = false;
       csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
-      RectTransform rect = swatch.GetComponent<RectTransform>();
 
+      RectTransform rect = swatch.GetComponent<RectTransform>();
       rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-      rect.offsetMin = new Vector2(0, 52);
-      rect.offsetMax = new Vector2(27, 66);
+
+      if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+      {
+        rect.offsetMin = swatchRDOffsetMin;
+        rect.offsetMax = swatchRDOffsetMax;
+      }
+      else
+      {
+        rect.offsetMin = swatchVABOffsetMin;
+        rect.offsetMax = swatchVABOffsetMax;
+      }
 
       TextMeshProUGUI textObj = new GameObject("Tag").AddComponent<TextMeshProUGUI>();
-      
       textObj.text = GetText(part);
-      textObj.fontSize = Settings.LabelFontSize;
+
       textObj.margin = new Vector4(4, 2, 3, 0);
       textObj.overflowMode = TextOverflowModes.Truncate;
       textObj.gameObject.SetLayerRecursive(LayerMask.NameToLayer("UI"));
       textObj.transform.SetParent(rect.transform, false);
       textObj.enableWordWrapping = false;
+      textObj.fontSize = Settings.LabelFontSize;
 
-      rect = textObj.GetComponent<RectTransform>();
-      rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
-      rect.offsetMin = new Vector2(3, 48);
-      rect.offsetMax = new Vector2(16, 64);
+      RectTransform rectText = textObj.GetComponent<RectTransform>();
+      rectText.anchorMin = rectText.anchorMax = rectText.pivot = Vector2.zero;
+
+      if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+      {
+        rectText.offsetMin = textRDOffsetMin;
+        rectText.offsetMax = textRDOffsetMax;
+      }
+      else
+      {
+        rectText.offsetMin = textVABOffsetMin;
+        rectText.offsetMax = textVABOffsetMax;
+      }
+      // turn off for performance
+      LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+      vlg.enabled = false;
+      csf.enabled = false;
     }
 
     /// <summary>

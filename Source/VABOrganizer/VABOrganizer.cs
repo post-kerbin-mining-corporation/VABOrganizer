@@ -7,7 +7,7 @@ namespace VABOrganizer
   /// <summary>
   /// Main addon startup
   /// </summary>
-  [KSPAddon(KSPAddon.Startup.EditorAny, true)]
+  [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
   public class VABOrganizer : MonoBehaviour
   {
     public static VABOrganizer Instance { get; private set; }
