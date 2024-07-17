@@ -78,6 +78,14 @@ namespace VABOrganizer
         rectText.offsetMin = textVABOffsetMin;
         rectText.offsetMax = textVABOffsetMax;
       }
+
+      // If the bulkhead label ends up empty hide things
+      if (textObj.text == "")
+      {
+        textObj.enabled = false;
+        swatch.enabled = false;
+      }
+
       // turn off for performance
       LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
       vlg.enabled = false;
