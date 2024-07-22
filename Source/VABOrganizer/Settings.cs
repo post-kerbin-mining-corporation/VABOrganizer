@@ -14,6 +14,13 @@
     /// Size of the font on tags
     /// </summary>
     public static float LabelFontSize = 9f;
+    /// <summary>
+    /// Size of the font on tags in R&D
+    /// </summary>
+    public static float RDLabelFontSize = 9f;
+    /// <summary>
+    /// Transparency of tags
+    /// </summary>
     public static float LabelAlpha = 0.4f;
 
     public static string ORGANIZER_SETTINGS_NODE_NAME = "ORGANIZERSETTINGS";
@@ -33,6 +40,7 @@
         settingsNode = settingsNodes[0];
         settingsNode.TryGetValue("DebugMode", ref DebugMode);
         settingsNode.TryGetValue("LabelFontSize", ref LabelFontSize);
+        settingsNode.TryGetValue("RDLabelFontSize", ref RDLabelFontSize);
         settingsNode.TryGetValue("LabelAlpha", ref LabelAlpha);
       }
       else

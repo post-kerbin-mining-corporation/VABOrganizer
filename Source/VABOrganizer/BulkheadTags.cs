@@ -63,7 +63,7 @@ namespace VABOrganizer
       textObj.gameObject.SetLayerRecursive(LayerMask.NameToLayer("UI"));
       textObj.transform.SetParent(rect.transform, false);
       textObj.enableWordWrapping = false;
-      textObj.fontSize = Settings.LabelFontSize;
+      
 
       RectTransform rectText = textObj.GetComponent<RectTransform>();
       rectText.anchorMin = rectText.anchorMax = rectText.pivot = Vector2.zero;
@@ -72,11 +72,13 @@ namespace VABOrganizer
       {
         rectText.offsetMin = textRDOffsetMin;
         rectText.offsetMax = textRDOffsetMax;
+        textObj.fontSize = Settings.RDLabelFontSize;
       }
       else
       {
         rectText.offsetMin = textVABOffsetMin;
         rectText.offsetMax = textVABOffsetMax;
+        textObj.fontSize = Settings.LabelFontSize;
       }
 
       // If the bulkhead label ends up empty hide things
