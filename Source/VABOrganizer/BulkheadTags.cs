@@ -44,7 +44,7 @@ namespace VABOrganizer
       RectTransform rect = swatch.GetComponent<RectTransform>();
       rect.anchorMin = rect.anchorMax = rect.pivot = Vector2.zero;
 
-      if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+      if (RDController.Instance != null)
       {
         rect.offsetMin = swatchRDOffsetMin;
         rect.offsetMax = swatchRDOffsetMax;
@@ -68,7 +68,7 @@ namespace VABOrganizer
       RectTransform rectText = textObj.GetComponent<RectTransform>();
       rectText.anchorMin = rectText.anchorMax = rectText.pivot = Vector2.zero;
 
-      if (HighLogic.CurrentGame.Mode == Game.Modes.CAREER || HighLogic.CurrentGame.Mode == Game.Modes.SCIENCE_SANDBOX && HighLogic.LoadedScene == GameScenes.SPACECENTER)
+      if (RDController.Instance != null)
       {
         rectText.offsetMin = textRDOffsetMin;
         rectText.offsetMax = textRDOffsetMax;
