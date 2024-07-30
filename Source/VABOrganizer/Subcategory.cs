@@ -138,6 +138,7 @@ namespace VABOrganizer
 
       RectTransform headerXform = headerBackground.GetComponent<RectTransform>();
       headerXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 20f);
+      headerXform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 210f);
 
       /// Set up the text
       headerText.transform.SetParent(headerBackground.transform, false);

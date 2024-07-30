@@ -89,8 +89,8 @@ namespace VABOrganizer
       VerticalLayoutGroup vlg = containerObj.AddComponent<VerticalLayoutGroup>();
       partListRect = containerObj.GetComponent<RectTransform>();
 
-      vlg.childControlWidth = vlg.childForceExpandHeight = vlg.childForceExpandWidth = true;
-      vlg.childControlHeight = vlg.childScaleHeight = vlg.childScaleWidth = false;
+      vlg.childForceExpandHeight = vlg.childForceExpandWidth = true;
+      vlg.childControlWidth = vlg.childControlHeight = vlg.childScaleHeight = vlg.childScaleWidth = false;
       partListRect.anchorMin =  new Vector2(0, 0f);
       partListRect.anchorMax = new Vector2(1, 1f);
       partListRect.pivot = new Vector2(0, 1f);
