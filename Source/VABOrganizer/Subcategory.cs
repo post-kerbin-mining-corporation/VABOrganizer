@@ -149,7 +149,8 @@ namespace VABOrganizer
       headerText.fontSize = 12;
       headerText.text = label;
       headerText.fontStyle = FontStyles.Bold;
-      headerText.margin = new Vector4(0, 4, 0, 2);
+      headerText.font = UISkinManager.TMPFont;
+      headerText.margin = new Vector4(0, 2, 0, 2);
 
       SetCategoryVisible(false);
       /// Set up the carat icon

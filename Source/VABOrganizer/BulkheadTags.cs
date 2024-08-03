@@ -58,7 +58,8 @@ namespace VABOrganizer
       TextMeshProUGUI textObj = new GameObject("Tag").AddComponent<TextMeshProUGUI>();
       textObj.text = GetText(part);
 
-      textObj.margin = new Vector4(4, 2, 3, 0);
+      textObj.margin = new Vector4(4, 1, 4, 0);
+      textObj.font = UISkinManager.TMPFont;
       textObj.overflowMode = TextOverflowModes.Truncate;
       textObj.gameObject.SetLayerRecursive(LayerMask.NameToLayer("UI"));
       textObj.transform.SetParent(rect.transform, false);
