@@ -23,10 +23,13 @@ namespace VABOrganizer
         foreach (ConfigNode subcatNode in subcategoryNodes)
         {
           Subcategory subcat = new Subcategory(subcatNode);
-          Subcategories.Add(subcat);
+          if (Subcategories.First(x => x.Name == subcat.Name) == null)
+          {
+            Utils.Log($"[Subcategory Sorting]: Duplicate definition for category {subcat.Name} found");
+            Subcategories.Add(subcat);
+          }
         }
         Subcategories = Subcategories.OrderBy(x => x.CategoryPriority).ThenBy(x => x.Priority).ToList();
-        //Subcategories.Sort((x, y) => x.Priority.CompareTo(y.Priority));
         Utils.Log($"[Subcategory Sorting]: Loaded {Subcategories.Count} subcategory definitions");
       }
       Subcategory miscCat = new Subcategory();
