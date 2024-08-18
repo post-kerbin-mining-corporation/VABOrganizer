@@ -23,7 +23,7 @@ namespace VABOrganizer
         foreach (ConfigNode subcatNode in subcategoryNodes)
         {
           Subcategory subcat = new Subcategory(subcatNode);
-          if (Subcategories.First(x => x.Name == subcat.Name) == null)
+          if (Subcategories.FirstOrDefault(x => x.Name == subcat.Name) == null)
           {
             Utils.Log($"[Subcategory Sorting]: Duplicate definition for category {subcat.Name} found");
             Subcategories.Add(subcat);
