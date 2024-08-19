@@ -11,8 +11,8 @@
       "repository": "https://github.com/post-kerbin-mining-corporation/VABOrganizer"
     },
     "depends" : [
-        { "name" : "ModuleManager"}
-        { "name" : "HarmonyKSP"}
+        { "name" : "ModuleManager"},
+        { "name" : "Harmony2"}
     ],
     "install" : [ { "find" : "VABOrganizer", 
         "install_to" : "GameData"
