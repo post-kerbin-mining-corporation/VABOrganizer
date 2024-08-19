@@ -11,6 +11,10 @@
     /// </summary>
     public static bool DebugMode = true;
     /// <summary>
+    /// If true, use Noto Sans
+    /// </summary>
+    public static bool KSPDefaultFont = true;
+    /// <summary>
     /// Size of the font on tags
     /// </summary>
     public static float LabelFontSize = 9f;
@@ -39,6 +43,7 @@
       {
         settingsNode = settingsNodes[0];
         settingsNode.TryGetValue("DebugMode", ref DebugMode);
+        settingsNode.TryGetValue("KSPDefaultFont", ref KSPDefaultFont);
         settingsNode.TryGetValue("LabelFontSize", ref LabelFontSize);
         settingsNode.TryGetValue("RDLabelFontSize", ref RDLabelFontSize);
         settingsNode.TryGetValue("LabelAlpha", ref LabelAlpha);
