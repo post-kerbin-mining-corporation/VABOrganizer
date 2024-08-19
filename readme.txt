@@ -9,7 +9,7 @@ DEPENDENCIES
 
 Required
 - ModuleManager (v4.2.3)
-- HarmonyKSP (v2.2.1)
+- Harmony2 (v2.2.1)
 
 ============
 INSTALLATION

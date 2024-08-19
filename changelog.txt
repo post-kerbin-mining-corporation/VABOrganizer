@@ -1,3 +1,7 @@
+v0.1.1
+------
+- Version file fix
+
 v0.1.0
 ------
 - The beginning
