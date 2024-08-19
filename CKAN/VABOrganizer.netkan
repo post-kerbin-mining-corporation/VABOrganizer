@@ -2,7 +2,7 @@
     "spec_version"   : "v1.4",
     "identifier"     : "VABOrganizer",
     "$vref"          : "#/ckan/ksp-avc",
-    "$kref"          : "#/ckan/spacedock/tbd",
+    "$kref":        "#/ckan/github/post-kerbin-mining-corporation/VABOrganizer",
     "license"        : "MIT",
     "name": "VAB Organizer",
     "author": "Nertea (Chris Adderley)",
