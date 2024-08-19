@@ -6,9 +6,8 @@
     "license"        : "MIT",
     "name": "VAB Organizer",
     "author": "Nertea (Chris Adderley)",
-    "abstract" : "",
+    "abstract" : "Small UI plugin that shows visual size tags on parts in the VAB as well as dividing the parts drawer into defined subcategories",
     "resources": {
-      "homepage": "https://forum.kerbalspaceprogram.com/index.php?/topic/90530-16x-community-tech-tree-january-21/",
       "repository": "https://github.com/post-kerbin-mining-corporation/VABOrganizer"
     },
     "depends" : [

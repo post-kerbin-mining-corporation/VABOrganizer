@@ -1,4 +1,4 @@
-mod-name: SpaceDust
+mod-name: VABOrganizer
 package:
   include-dependencies: true  # Include dependencies in the package
   included-gamedata:
@@ -15,10 +15,10 @@ dependencies:  # Configure dependencies
     location: s3
 deploy:
   SpaceDock:
-    enabled: true  # activate/deactivate this deployment script
+    enabled: false  # activate/deactivate this deployment script
     mod-id: 2602  # The Spacedock mod ID for deployment
   CurseForge:
-    enabled: true  # activate/deactivate this deployment script
+    enabled: false  # activate/deactivate this deployment script
     mod-id: 432199  # The CurseForge mod ID for deployment
   GitHub:
     enabled: true  # activate/deactivate this deployment script
