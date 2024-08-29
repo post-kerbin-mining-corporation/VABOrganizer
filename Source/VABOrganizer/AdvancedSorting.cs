@@ -25,6 +25,7 @@ namespace VABOrganizer
     static string cachedCategorySort = "";
 
     const string BULKHEAD_SORT_KEY = "#LOC_VABOrganizer_BulkheadSortTooltip";
+    const string ADVANCED_SORT_KEY = "#LOC_VABOrganizer_AdvancedSortTooltip";
 
     /// <summary>
     /// Creates the sorting UI
@@ -36,8 +37,8 @@ namespace VABOrganizer
       GameObject sortByNameButton = uiSorterBase.gameObject.GetChild("StateButtonName");
       if (!uiSorterBase.gameObject.GetChild("StateButtonProfile"))
       {
-        CreateSortButton(uiSorterBase, sortByNameButton, "Profile", 4, true);
-        CreateSortButton(uiSorterBase, sortByNameButton, "Custom", 5, false);
+        CreateSortButton(uiSorterBase, sortByNameButton, "Profile", 4, true, BULKHEAD_SORT_KEY);
+        CreateSortButton(uiSorterBase, sortByNameButton, "Custom", 5, false, ADVANCED_SORT_KEY);
 
       }
       else
@@ -56,7 +57,7 @@ namespace VABOrganizer
     /// <param name="sortName"></param>
     /// <param name="buttonIndex"></param>
     /// <param name="startingSorter"></param>
-    public static void CreateSortButton(UIListSorter sorter, GameObject template, string sortName, int buttonIndex, bool startingSorter)
+    public static void CreateSortButton(UIListSorter sorter, GameObject template, string sortName, int buttonIndex, bool startingSorter, string tooltipKey)
     {
       GameObject newSortButtonObj = GameObject.Instantiate(template);
       newSortButtonObj.transform.SetParent(sorter.transform, false);
@@ -70,7 +71,7 @@ namespace VABOrganizer
       sortingButton.onClick = new Button.ButtonClickedEvent();
       sortingButton.onClick.AddListener(() => sorter.ClickButton(buttonIndex));
       sortingText.text = sortName;
-      tooltip.textString = sortName; /// Localizer.Format(BULKHEAD_SORT_KEY);
+      tooltip.textString = Localizer.Format(tooltipKey);
       newSortButtonObj.name = $"StateButton{sortName}";
       sortingStateImage.name = $"StateImage{sortName}";
 
@@ -96,7 +97,7 @@ namespace VABOrganizer
     }
 
     /// <summary>
-    /// Rebuilds the sort button array to use icons instead of text and adds a bulkhead one
+    /// Rebuilds the sort button array to use icons instead of text
     /// </summary>
     /// <param name="sorterBase"></param>
     public static void RestyleButtons(Transform sorterBase)
@@ -153,7 +154,7 @@ namespace VABOrganizer
     }
 
     /// <summary>
-    /// Changes the current advanced sort mode from a UI call
+    /// Changes the current advanced sort mode
     /// </summary>
     /// <param name="newType"></param>
     public static void ChangeAdvancedSortMode(AdvancedSortType newType)
@@ -195,11 +196,11 @@ namespace VABOrganizer
         setSortingMethod.Invoke(uiSorterBase, new object[] { curMode, curAsc });
         onSortMethod.Invoke(uiPartList, new object[] { 5, curAsc });
       }
-
-
-
-
     }
+
+    /// <summary>
+    /// Refresh the UI from a generic part list Refresh event
+    /// </summary>
     public static void Refresh()
     {
       string currentCategorySort = uiPartList.CategorizerFilters[0].ID;
@@ -236,7 +237,6 @@ namespace VABOrganizer
             }
           }
         }
-
         cachedCategorySort = currentCategorySort;
       }
     }

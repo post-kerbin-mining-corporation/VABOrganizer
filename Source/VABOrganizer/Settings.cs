@@ -31,6 +31,7 @@
     public static string ORGANIZER_BULKHEAD_NODE_NAME = "ORGANIZERBULKHEAD";
     public static string ORGANIZER_SORTER_NODE_NAME = "ORGANIZERSORTERTYPE";
     public static string ORGANIZER_SUBCATEGORY_NODE_NAME = "ORGANIZERSUBCATEGORY";
+    public static string ORGANIZER_VARIABLE_NODE_NAME = "ORGANIZERSORTVARIABLE";
     /// <summary>
     /// Load data from configuration
     /// </summary>

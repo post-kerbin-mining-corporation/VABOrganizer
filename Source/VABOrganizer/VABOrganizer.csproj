@@ -82,6 +82,7 @@
     <Compile Include="BulkheadData.cs" />
     <Compile Include="AdvancedSorting.cs" />
     <Compile Include="BulkheadTags.cs" />
+    <Compile Include="CustomSortVariable.cs" />
     <Compile Include="Harmony\EditorPartList.cs" />
     <Compile Include="Harmony\EditorPartIcon.cs" />
     <Compile Include="Harmony\Patcher.cs" />

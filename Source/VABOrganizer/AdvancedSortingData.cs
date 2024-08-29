@@ -44,6 +44,8 @@ namespace VABOrganizer
         }
         Utils.Log($"[Advanced Sorting]: Loaded {BulkheadMap.Count} bulkhead definitions");
       }
+
+
       ConfigNode[] sortNodes = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_SORTER_NODE_NAME);
       Utils.Log($"[Advanced Sorting]: Loading sorter definitions");
       if (sortNodes.Length > 0)
@@ -64,7 +66,7 @@ namespace VABOrganizer
         }
         Utils.Log($"[Advanced Sorting]: Loaded {sortTypes.Count} sorting definitions");
 
-        Utils.Log($"[Advanced Sorting]: Parsing sorting map");
+        Utils.Log($"[Advanced Sorting]: Parsing sorting definitions into map");
         if (sortTypes.Count > 0)
         {
           SortMap = new Dictionary<string, List<AdvancedSortType>>();
@@ -82,7 +84,6 @@ namespace VABOrganizer
                 SortMap.Add(sortTypes[i].AssociatedPartCategories[j], new List<AdvancedSortType> { sortTypes[i] });
               }
             }
-
           }
         }
       }

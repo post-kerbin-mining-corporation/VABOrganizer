@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using KSP.Localization;
 
 namespace VABOrganizer
@@ -38,7 +37,7 @@ namespace VABOrganizer
 
     protected const string NODE_NAME = "name";
     protected const string NODE_LABEL = "Label";
-    protected const string NODE_SORTER = "Sorter";
+    protected const string NODE_SORTER = "SortVariable";
     protected const string NODE_ASSOCIATED_CATEGORY = "VisibleCategories";
     protected const string NODE_CATEGORY = "category";
 
@@ -70,7 +69,6 @@ namespace VABOrganizer
             partCategories.Add(stringCat);
         }
       }
-
       label = Localizer.Format(label);
     }
   }

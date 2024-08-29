@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -41,7 +37,6 @@ namespace VABOrganizer
 
     public void Awake()
     {
-
       sortTypeButtons = new List<Button>();
       sortTypeText = new List<Text>();
 
@@ -51,21 +46,24 @@ namespace VABOrganizer
       moreRect.anchoredPosition = new Vector2(10, 2);
     }
 
+    /// <summary>
+    /// Maps the prefab objects to code
+    /// </summary>
     public void AssignReferences()
     {
       filterTypeTransform = this.transform.FindDeepChild("TooltipBG");
       filterTypeRolloutObject = filterTypeTransform.gameObject;
       filterTypeCarat = this.transform.FindDeepChild("Carat").gameObject;
-
       moreButton = Utils.FindChildOfType<Button>("MoreButton", transform);
-
-
       buttonTemplateObject = Utils.FindChildOfType<Button>("CustomFilterName", transform).gameObject;
-
       buttonTemplateObject.SetActive(false);
       SetPanelShown(false);
-
     }
+
+    /// <summary>
+    /// Set up the sorters in the UI by generating buttons as needed
+    /// </summary>
+    /// <param name="currentSorters"></param>
     public void SetupSorters(List<AdvancedSortType> currentSorters)
     {
       Utils.Log($"[UIAdvancedSorterWidget] Category has no sorters");
@@ -85,13 +83,11 @@ namespace VABOrganizer
           Text newButtonText = newButtonObj.GetComponent<Text>();
 
           int j = i;
-
           newButton.onClick.AddListener(() => this.OnClickSorterButton(j));
           newButtonText.text = sorters[i].Label;
 
           sortTypeButtons.Add(newButton);
           sortTypeText.Add(newButtonText);
-
           if (AdvancedSorting.CurrentAdvancedSort != null && AdvancedSorting.CurrentAdvancedSort.Name == sorters[i].Name)
           {
             SetTextState(newButtonText, FilterTextState.Selected);
@@ -108,6 +104,10 @@ namespace VABOrganizer
         ClearButtons();
       }
     }
+
+    /// <summary>
+    /// Remove all the buttons in the subpanel
+    /// </summary>
     void ClearButtons()
     {
       if (sortTypeButtons != null && sortTypeButtons.Count > 0)
@@ -120,10 +120,11 @@ namespace VABOrganizer
         sortTypeText.Clear();
       }
     }
-    public void OnClickButton()
-    {
-      SetPanelShown(!PanelShown);
-    }
+
+    /// <summary>
+    /// Set whether the subpanel is shown or not
+    /// </summary>
+    /// <param name="state"></param>
     public void SetPanelShown(bool state)
     {
       if (sorters == null || (sorters != null && sorters.Count == 0))
@@ -137,6 +138,12 @@ namespace VABOrganizer
       filterTypeCarat.SetActive(state);
       filterTypeRolloutObject.SetActive(state);
     }
+
+    public void OnClickButton()
+    {
+      SetPanelShown(!PanelShown);
+    }
+
     public void OnClickSorterButton(int sorterClicked)
     {
       AdvancedSorting.ChangeAdvancedSortMode(sorters[sorterClicked]);
@@ -147,6 +154,11 @@ namespace VABOrganizer
       SetTextState(sortTypeText[sorterClicked], FilterTextState.Selected);
     }
 
+    /// <summary>
+    /// Set the color of a text item according to the selection color rules
+    /// </summary>
+    /// <param name="theText"></param>
+    /// <param name="state"></param>
     void SetTextState(Text theText, FilterTextState state)
     {
       switch (state)

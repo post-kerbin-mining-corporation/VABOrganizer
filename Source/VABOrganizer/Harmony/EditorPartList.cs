@@ -32,7 +32,7 @@ namespace VABOrganizer.HarmonyPatches
         {
           partSortProperty.SetValue(__instance,
             new RUIutils.FuncComparer<AvailablePart>((AvailablePart r1, AvailablePart r2) =>
-            RUIutils.SortAscDescPrimarySecondary(asc, PartFilterDatastore.Instance.PartFilterData[r1.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter).CompareTo(PartFilterDatastore.Instance.PartFilterData[r2.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter)), r1.title.CompareTo(r2.title))));
+            RUIutils.SortAscDescPrimarySecondary(asc, AdvancedSortingDataStore.Instance.PartData[r1.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter).CompareTo(AdvancedSortingDataStore.Instance.PartData[r2.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter)), r1.title.CompareTo(r2.title))));
         }
       }
       return true;
