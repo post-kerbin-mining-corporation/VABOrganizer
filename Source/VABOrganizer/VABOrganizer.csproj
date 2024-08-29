@@ -76,8 +76,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedSortingData.cs" />
+    <Compile Include="AdvancedSortType.cs" />
+    <Compile Include="AvailablePartData.cs" />
     <Compile Include="BulkheadData.cs" />
-    <Compile Include="BulkheadSorting.cs" />
+    <Compile Include="AdvancedSorting.cs" />
     <Compile Include="BulkheadTags.cs" />
     <Compile Include="Harmony\EditorPartList.cs" />
     <Compile Include="Harmony\EditorPartIcon.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="Harmony\UIListSorter.cs" />
     <Compile Include="Subcategory.cs" />
     <Compile Include="SubcategorySorting.cs" />
+    <Compile Include="UIAdvancedSorterWidget.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VABOrganizer.cs" />
     <Compile Include="Settings.cs" />
