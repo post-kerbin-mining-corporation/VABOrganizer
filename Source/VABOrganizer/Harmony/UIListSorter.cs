@@ -15,7 +15,7 @@ namespace VABOrganizer.HarmonyPatches
     [HarmonyPatch("Start")]
     internal static bool PatchStart(UIListSorter __instance)
     {
-      BulkheadSorting.CreateVABSortUI();
+      AdvancedSorting.CreateVABSortUI();
       return true;
     }
   }
