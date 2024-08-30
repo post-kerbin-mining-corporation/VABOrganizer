@@ -77,6 +77,7 @@ namespace VABOrganizer.HarmonyPatches
     internal static bool PatchRefreshSearchList(EditorPartList __instance)
     {
       SubcategorySorting.Refresh();
+      AdvancedSorting.Refresh();
       return true;
     }
 

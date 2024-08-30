@@ -205,7 +205,10 @@ namespace VABOrganizer
     {
       string currentCategorySort = uiPartList.CategorizerFilters[0].ID;
       Utils.Log($"[Advanced Sorting] Refreshed, new categoryFilter is {currentCategorySort}, from {cachedCategorySort}");
-
+      if (SortWidget != null)
+      {
+        SortWidget.SetPositionData();
+      }
       if (cachedCategorySort != currentCategorySort)
       {
         List<AdvancedSortType> sorters = AdvancedSortingData.GetSortersForCategory(currentCategorySort);
@@ -239,6 +242,7 @@ namespace VABOrganizer
         }
         cachedCategorySort = currentCategorySort;
       }
+
     }
   }
 

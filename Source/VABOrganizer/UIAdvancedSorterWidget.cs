@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using KSP.UI;
+using KSP.UI.Screens;
 
 namespace VABOrganizer
 {
@@ -35,6 +37,8 @@ namespace VABOrganizer
     List<Text> sortTypeText;
     List<AdvancedSortType> sorters;
 
+    EditorPartList pList;
+
     public void Awake()
     {
       sortTypeButtons = new List<Button>();
@@ -59,6 +63,20 @@ namespace VABOrganizer
       buttonTemplateObject.SetActive(false);
       SetPanelShown(false);
     }
+    public void SetPositionData()
+    {
+      Utils.Log($"[UIAdvancedSorterWidget] Positining Widget");
+      if (pList == null)
+      {
+        pList = GameObject.FindObjectOfType<EditorPartList>();
+      }
+      RectTransform filterTypeRect = filterTypeTransform.GetComponent<RectTransform>();
+      Vector3 worldpoint = moreButton.transform.GetComponent<RectTransform>().TransformPoint(moreButton.transform.localPosition);
+      filterTypeTransform.SetParent(pList.transform);
+
+      Vector3 position = pList.transform.InverseTransformPoint(worldpoint);
+      filterTypeRect.localPosition = position + new Vector3(7, -7, 0);
+    }
 
     /// <summary>
     /// Set up the sorters in the UI by generating buttons as needed
@@ -66,7 +84,6 @@ namespace VABOrganizer
     /// <param name="currentSorters"></param>
     public void SetupSorters(List<AdvancedSortType> currentSorters)
     {
-      Utils.Log($"[UIAdvancedSorterWidget] Category has no sorters");
       sorters = currentSorters;
       if (sorters != null && sorters.Count > 0)
       {
@@ -100,14 +117,17 @@ namespace VABOrganizer
       }
       else
       {
-        SetPanelShown(false);
+        Utils.Log($"[UIAdvancedSorterWidget] Category has no sorters");
+
         ClearButtons();
+        SetPanelShown(false);
       }
+      
     }
 
     /// <summary>
     /// Remove all the buttons in the subpanel
-    /// </summary>
+    /// </summary>l
     void ClearButtons()
     {
       if (sortTypeButtons != null && sortTypeButtons.Count > 0)
@@ -127,6 +147,7 @@ namespace VABOrganizer
     /// <param name="state"></param>
     public void SetPanelShown(bool state)
     {
+
       if (sorters == null || (sorters != null && sorters.Count == 0))
       {
         PanelShown = false;
@@ -135,8 +156,8 @@ namespace VABOrganizer
       {
         PanelShown = state;
       }
-      filterTypeCarat.SetActive(state);
-      filterTypeRolloutObject.SetActive(state);
+      filterTypeCarat.SetActive(PanelShown);
+      filterTypeRolloutObject.SetActive(PanelShown);
     }
 
     public void OnClickButton()
