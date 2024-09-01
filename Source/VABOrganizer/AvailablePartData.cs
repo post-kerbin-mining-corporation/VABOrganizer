@@ -88,8 +88,18 @@ namespace VABOrganizer
         ConfigNode[] resourceNodes = basePart.partConfig.GetNodes("RESOURCE");
         ConfigNode[] moduleNodes = basePart.partConfig.GetNodes("MODULE");
 
-        // Parse data out of part top level 
+        /// Parse data out of part top level 
+        /// Complicated ones
         ProcessPartKeys(basePart.partConfig);
+
+        for (int i = 0; i < AdvancedSortingDataStore.ConfigVariables.Count; i++)
+        {
+          CustomSortVariable sortVar = AdvancedSortingDataStore.ConfigVariables[i];
+          if (sortVar.NodeType == "PART")
+          {
+            ParseNodeForConfigSortVar(basePart.partConfig, sortVar);
+          }
+        }
 
         // Parse data out of module nodes
         for (int i = 0; i < moduleNodes.Length; i++)
@@ -98,16 +108,25 @@ namespace VABOrganizer
           ProcessModule_ReactionWheel(moduleNodes[i]);
           ProcessModule_Engine(moduleNodes[i]);
           ProcessModule_RCS(moduleNodes[i]);
+          ProcessModule_DataTransmitter(moduleNodes[i]);
+          ProcessModule_ScienceExperiment(moduleNodes[i]);
 
           for (int j = 0; j < AdvancedSortingDataStore.ConfigVariables.Count; j++)
           {
             CustomSortVariable sortVar = AdvancedSortingDataStore.ConfigVariables[j];
-            if (sortVar.NodeType == "MODULE" && moduleNodes[i].GetValue("name") == sortVar.NodeName)
+            if (sortVar.NodeType.Contains("MODULE") && moduleNodes[i].GetValue("name") == sortVar.NodeName)
             {
-              float dataValue = 0f;
-              if (moduleNodes[i].TryGetValue(sortVar.FieldName, ref dataValue))
+              if (sortVar.NodeType == "MODULE_DATA")
               {
-                AddOrMaxKey(sortVar.VariableName, dataValue);
+                ConfigNode dataNode = new ConfigNode();
+                if (moduleNodes[i].TryGetNode(sortVar.DataNodeType, ref dataNode) && dataNode.GetValue("name") == sortVar.DataNodeName)
+                {
+                  ParseNodeForConfigSortVar(dataNode, sortVar);
+                }
+              }
+              else
+              {
+                ParseNodeForConfigSortVar(moduleNodes[i], sortVar);                
               }
             }
           }
@@ -120,27 +139,70 @@ namespace VABOrganizer
             CustomSortVariable sortVar = AdvancedSortingDataStore.ConfigVariables[j];
             if (sortVar.NodeType == "RESOURCE" && resourceNodes[i].GetValue("name") == sortVar.NodeName)
             {
-              float dataValue = 0f;
-              if (resourceNodes[i].TryGetValue(sortVar.FieldName, ref dataValue))
-              {
-                AddOrMaxKey(sortVar.VariableName, dataValue);
-              }
+              ParseNodeForConfigSortVar(resourceNodes[i], sortVar);
             }
           }
         }
 
       }
 
+      void ParseNodeForConfigSortVar(ConfigNode node, CustomSortVariable sortVar)
+      {
+        if (sortVar.FieldCurveKey != "" || sortVar.FieldCurveParse != "")
+        {
+          if (node.HasNode(sortVar.FieldName))
+          {
+            FloatCurve curveField = new FloatCurve();
+            curveField.Load(node.GetNode(sortVar.FieldName));
+            if (sortVar.FieldCurveParse == "SINGLE")
+            {
+              float curveKey = 0f;
+              if (node.TryGetValue(sortVar.FieldCurveKey, ref curveKey))
+              {
+                AddSorterKey(sortVar.VariableName, curveField.Evaluate(curveKey), sortVar.CombineMethod);
+              }
+            }
+            if (sortVar.FieldCurveParse == "MAX")
+            {
+              AddSorterKey(sortVar.VariableName, curveField.Evaluate(curveField.maxTime), sortVar.CombineMethod);
+            }
+            if (sortVar.FieldCurveParse == "MIN")
+            {
+              AddSorterKey(sortVar.VariableName, curveField.Evaluate(curveField.minTime), sortVar.CombineMethod);
+            }
+          }
+
+        }
+        else
+        {
+          float dataValue = 0f;
+          if (node.TryGetValue(sortVar.FieldName, ref dataValue))
+          {
+            AddSorterKey(sortVar.VariableName, dataValue, sortVar.CombineMethod);
+          }
+        }
+      }
       /// <summary>
       /// Add a data key - if it already exists take the higher one
       /// </summary>
       /// <param name="key"></param>
       /// <param name="value"></param>
-      void AddOrMaxKey(string key, float value)
+      void AddSorterKey(string key, float value, string method)
       {
         if (dataEntries.ContainsKey(key))
         {
-          dataEntries[key] = Mathf.Max(value, dataEntries[key]);
+          if (method == "MAX")
+          {
+            dataEntries[key] = Mathf.Max(value, dataEntries[key]);
+          }
+          if (method == "MIN")
+          {
+            dataEntries[key] = Mathf.Min(value, dataEntries[key]);
+          }
+          if (method == "REPLACE")
+          {
+            dataEntries[key] = value;
+          }
         }
         else
         {
@@ -153,11 +215,66 @@ namespace VABOrganizer
       /// <param name="node"></param>
       void ProcessPartKeys(ConfigNode node)
       {
-        int crewData = 0;
-        if (node.TryGetValue("CrewCapacity", ref crewData))
+      }
+      void ProcessModule_ScienceExperiment(ConfigNode node)
+      {
+        if (node.GetValue("name") == "ModuleScienceExperiment")
         {
-          AddOrMaxKey("PartVar_CrewCapacity", crewData);
+          string expID = "";
+          if (node.TryGetValue("experimentID", ref expID))
+          {
+            AddSorterKey("ModuleVar_Experiment", expID.GetHashCode(), "MAX");
+            /// At this point we don't have access to experiment data, so we go and fetch it... This is probably not great
+            ConfigNode[] experimentNodes = GameDatabase.Instance.GetConfigNodes("EXPERIMENT_DEFINITION");
+            for (int i = 0; i < experimentNodes.Length; i++)
+            {
+              string expName = "";
+              float dataValue = 0f;
+              float dataScale = 1f;
+              if (experimentNodes[i].TryGetValue("id", ref expName))
+              {
+                if (expName == expID)
+                {
+                  if (experimentNodes[i].TryGetValue("baseValue", ref dataValue))
+                  {
+                    /// If available, scale by the part data value
+                    node.TryGetValue("scienceValueRatio", ref dataScale);
+                    AddSorterKey("ModuleVar_ExperimentValue", dataValue * dataScale, "MAX");
+                  }
+                }
+              }
+            }
+          }
+
         }
+      }
+      void ProcessModule_DataTransmitter(ConfigNode node)
+      {
+        if (node.GetValue("name") == "ModuleDataTransmitter")
+        {
+          bool flag = false;
+          float num = 0f;
+          float packetSize = 0f;
+          float packetInterval = 0f;
+
+          if (node.TryGetValue("antennaCombineable", ref flag))
+          {
+            if (node.TryGetValue("antennaCombinableExponent", ref num))
+            {
+              AddSorterKey("ModuleVar_AntennaCombinability", num, "MAX");
+            }
+          }
+
+          if (node.TryGetValue("packetInterval", ref packetInterval) && node.TryGetValue("packetSize", ref packetSize))
+          {
+            AddSorterKey("ModuleVar_AntennaRate", packetSize / packetInterval, "MAX");
+          }
+          if (node.TryGetValue("packetResourceCost", ref num))
+          {
+            AddSorterKey("ModuleVar_AntennaCost", num / packetInterval, "MAX");
+          }
+        }
+
       }
 
       void ProcessModule_ReactionWheel(ConfigNode node)
@@ -183,7 +300,7 @@ namespace VABOrganizer
             totalTorque += torque1;
           }
 
-          AddOrMaxKey("ModuleVar_ReactionWheelAverageTorque", totalTorque / (float)(torqueCount));
+          AddSorterKey("ModuleVar_ReactionWheelAverageTorque", totalTorque / (float)(torqueCount), "MAX");
         }
       }
       void ProcessModule_RCS(ConfigNode node)
@@ -200,11 +317,11 @@ namespace VABOrganizer
             float mdot = thrust / (ispCurve.Evaluate(0f) * (float)PhysicsGlobals.GravitationalAcceleration);
             float thrustASL = mdot * (ispCurve.Evaluate(1f) * (float)PhysicsGlobals.GravitationalAcceleration);
 
-            AddOrMaxKey("ModuleVar_RCSThrustVacuum", thrust);
-            AddOrMaxKey("ModuleRCS_RCSThrustASL", thrustASL);
+            AddSorterKey("ModuleVar_RCSThrustVacuum", thrust, "MAX");
+            AddSorterKey("ModuleRCS_RCSThrustASL", thrustASL, "MAX");
 
-            AddOrMaxKey("ModuleVar_RCSIspASL", ispCurve.Evaluate(1f));
-            AddOrMaxKey("ModuleVar_RCSIspVacuum", ispCurve.Evaluate(0f));
+            AddSorterKey("ModuleVar_RCSIspASL", ispCurve.Evaluate(1f), "MAX");
+            AddSorterKey("ModuleVar_RCSIspVacuum", ispCurve.Evaluate(0f), "MAX");
           }
         }
       }
@@ -222,14 +339,14 @@ namespace VABOrganizer
             float mdot = thrust / (ispCurve.Evaluate(0f) * (float)PhysicsGlobals.GravitationalAcceleration);
             float thrustASL = mdot * (ispCurve.Evaluate(1f) * (float)PhysicsGlobals.GravitationalAcceleration);
 
-            AddOrMaxKey("ModuleVar_EngineThrustVacuum", thrust);
-            AddOrMaxKey("ModuleVar_EngineThrustASL", thrustASL);
+            AddSorterKey("ModuleVar_EngineThrustVacuum", thrust, "MAX");
+            AddSorterKey("ModuleVar_EngineThrustASL", thrustASL, "MAX");
 
-            AddOrMaxKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass);
-            AddOrMaxKey("ModuleVar_EngineTWRVacuum", thrust / basePart.MinimumMass);
+            AddSorterKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass, "MAX");
+            AddSorterKey("ModuleVar_EngineTWRVacuum", thrust / basePart.MinimumMass, "MAX");
 
-            AddOrMaxKey("ModuleVar_EngineIspASL", ispCurve.Evaluate(1f));
-            AddOrMaxKey("ModuleVar_EngineIspVacuum", ispCurve.Evaluate(0f));
+            AddSorterKey("ModuleVar_EngineIspASL", ispCurve.Evaluate(1f), "MAX");
+            AddSorterKey("ModuleVar_EngineIspVacuum", ispCurve.Evaluate(0f), "MAX");
           }
 
         }
