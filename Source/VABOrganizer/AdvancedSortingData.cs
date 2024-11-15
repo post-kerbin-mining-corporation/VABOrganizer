@@ -25,6 +25,7 @@ namespace VABOrganizer
     /// </summary>
     public static void Load()
     {
+
       ConfigNode[] bulkheadNodes = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_BULKHEAD_NODE_NAME);
       Utils.Log($"[Advanced Sorting]: Loading bulkhead definitions");
       if (bulkheadNodes.Length > 0)
@@ -45,23 +46,27 @@ namespace VABOrganizer
         Utils.Log($"[Advanced Sorting]: Loaded {BulkheadMap.Count} bulkhead definitions");
       }
 
-
-      ConfigNode[] sortNodes = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_SORTER_NODE_NAME);
-      Utils.Log($"[Advanced Sorting]: Loading sorter definitions");
-      if (sortNodes.Length > 0)
+      ConfigNode[] sortRoot = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_SORTER_ROOT_NODE_NAME);
+      if (sortRoot.Length > 0)
       {
 
         List<AdvancedSortType> sortTypes = new List<AdvancedSortType>();
-        foreach (ConfigNode sortNode in sortNodes)
+        foreach (ConfigNode rootNode in sortRoot)
         {
-          AdvancedSortType data = new AdvancedSortType(sortNode);
-          if (!sortTypes.Contains(data))
+          ConfigNode[] sortNodes = rootNode.GetNodes(Settings.ORGANIZER_SORTER_NODE_NAME);
+          Utils.Log($"[Advanced Sorting]: Loading sorter definitions");
+
+          foreach (ConfigNode sortNode in sortNodes)
           {
-            sortTypes.Add(data);
-          }
-          else
-          {
-            Utils.LogWarning($"[Advanced Sorting]: Multiple ORGANIZERSORTERTYPEs with the same name ({data.Name}) found, skipping others");
+            AdvancedSortType data = new AdvancedSortType(sortNode);
+            if (!sortTypes.Contains(data))
+            {
+              sortTypes.Add(data);
+            }
+            else
+            {
+              Utils.LogWarning($"[Advanced Sorting]: Multiple ORGANIZERSORTERTYPEs with the same name ({data.Name}) found, skipping others");
+            }
           }
         }
         Utils.Log($"[Advanced Sorting]: Loaded {sortTypes.Count} sorting definitions");
