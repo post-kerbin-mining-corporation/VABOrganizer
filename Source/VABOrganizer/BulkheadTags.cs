@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using KSP.UI.Screens;
+using PreFlightTests;
 
 namespace VABOrganizer
 {
@@ -12,7 +13,7 @@ namespace VABOrganizer
   {
 
     internal static Vector2 swatchVABOffsetMin = new Vector2(0, 52);
-    internal static Vector2 swatchVABOffsetMax = new Vector2(27, 66);
+    internal static Vector2 swatchVABOffsetMax = new Vector2(66, 66);
     internal static Vector2 swatchRDOffsetMin = new Vector2(0, 33);
     internal static Vector2 swatchRDOffsetMax = new Vector2(21, 50);
 
@@ -70,7 +71,7 @@ namespace VABOrganizer
       textObj.gameObject.SetLayerRecursive(LayerMask.NameToLayer("UI"));
       textObj.transform.SetParent(rect.transform, false);
       textObj.enableWordWrapping = false;
-      
+
 
       RectTransform rectText = textObj.GetComponent<RectTransform>();
       rectText.anchorMin = rectText.anchorMax = rectText.pivot = Vector2.zero;
@@ -94,11 +95,21 @@ namespace VABOrganizer
         textObj.enabled = false;
         swatch.enabled = false;
       }
-
+      rect.SetSiblingIndex(Mathf.Max(rect.GetSiblingIndex() - 1, 0));
       // turn off for performance
       LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
       vlg.enabled = false;
       csf.enabled = false;
+      if (RDController.Instance != null)
+      {
+        rect.offsetMin = swatchRDOffsetMin;
+        rect.offsetMax = swatchRDOffsetMax;
+      }
+      else
+      {
+        rect.offsetMin = swatchVABOffsetMin;
+        rect.offsetMax = swatchVABOffsetMax;
+      }
     }
 
     /// <summary>
