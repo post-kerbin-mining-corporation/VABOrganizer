@@ -24,7 +24,7 @@ namespace VABOrganizer
         for (int i = 0; i < profileStrings.Length; i++)
         {
           BulkheadData validData;
-          if (BulkheadSorting.BulkheadMap.TryGetValue(profileStrings[i], out validData))
+          if (AdvancedSortingData.BulkheadMap.TryGetValue(profileStrings[i], out validData))
           {
             if (validData.Size > maxSize)
             {

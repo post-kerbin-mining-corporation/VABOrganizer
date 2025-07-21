@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UniLinq;
 using System.IO;
 using System.Collections.Generic;
 
@@ -14,7 +15,7 @@ namespace VABOrganizer
     public void Awake()
     {
       Settings.Load();
-      BulkheadSorting.Load();
+      AdvancedSortingData.Load();
       SubcategorySorting.Load();
     }
   }
@@ -27,13 +28,30 @@ namespace VABOrganizer
   {
     public static Dictionary<string,Sprite> Sprites { get; private set; }
 
+    public static GameObject AdvancedSortPrefab { get; private set; }
+
     internal static string ASSET_PATH = "GameData/VABOrganizer/Assets/vaborganizer.dat";
     internal static string SPRITE_ATLAS_NAME = "vab-organizer";
 
+    public static Sprite GetSprite(string key)
+    {
+      if (Sprites.ContainsKey(key))
+      {
+        return Sprites[key]; 
+      }
+      Debug.LogWarning($"[Assets] Could not find sprite {key}");
+      return Sprites.First().Value;
+    }
+
     private void Awake()
     {
+      GameObject.DontDestroyOnLoad(gameObject);
       Utils.Log("[Assets]: Loading UI Prefabs");
       AssetBundle prefabs = AssetBundle.LoadFromFile(Path.Combine(KSPUtil.ApplicationRootPath, ASSET_PATH));
+
+      AdvancedSortPrefab = prefabs.LoadAsset("OrganizerFilters") as GameObject;
+      AdvancedSortPrefab.AddComponent<UIAdvancedSorterWidget>().AssignReferences();
+      AdvancedSortPrefab.transform.SetParent(this.transform);
 
       Sprite[] spriteSheet = prefabs.LoadAssetWithSubAssets<Sprite>(SPRITE_ATLAS_NAME);
       Sprites = new Dictionary<string, Sprite>();

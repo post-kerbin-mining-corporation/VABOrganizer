@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>VABOrganizer</RootNamespace>
     <AssemblyName>VABOrganizer</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -76,9 +76,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdvancedSortingData.cs" />
+    <Compile Include="AdvancedSortType.cs" />
+    <Compile Include="AvailablePartData.cs" />
     <Compile Include="BulkheadData.cs" />
-    <Compile Include="BulkheadSorting.cs" />
+    <Compile Include="AdvancedSorting.cs" />
     <Compile Include="BulkheadTags.cs" />
+    <Compile Include="CustomSortVariable.cs" />
     <Compile Include="Harmony\EditorPartList.cs" />
     <Compile Include="Harmony\EditorPartIcon.cs" />
     <Compile Include="Harmony\Patcher.cs" />
@@ -86,6 +90,7 @@
     <Compile Include="Harmony\UIListSorter.cs" />
     <Compile Include="Subcategory.cs" />
     <Compile Include="SubcategorySorting.cs" />
+    <Compile Include="UIAdvancedSorterWidget.cs" />
     <Compile Include="Utils.cs" />
     <Compile Include="VABOrganizer.cs" />
     <Compile Include="Settings.cs" />
