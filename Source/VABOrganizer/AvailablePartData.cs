@@ -357,10 +357,10 @@ namespace VABOrganizer
             AddSorterKey("ModuleVar_EngineThrustASL", thrustASL, "MAX");
 
             AddSorterKey("ModuleVar_EngineTWRVacuum", thrust / basePart.MinimumMass, "MAX");
-			AddSorterKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass, "MAX");
+            AddSorterKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass, "MAX");
 
             AddSorterKey("ModuleVar_EngineIspVacuum", ispVac, "MAX");
-			AddSorterKey("ModuleVar_EngineIspASL", ispASL, "MAX");
+            AddSorterKey("ModuleVar_EngineIspASL", ispASL, "MAX");
           }
         }
       }
