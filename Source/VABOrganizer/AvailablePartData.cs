@@ -332,7 +332,8 @@ namespace VABOrganizer
       }
       void ProcessModule_Engine(ConfigNode node)
       {
-        if (node.GetValue("name") == "ModuleEnginesFX")
+        var engineModuleName = node.GetValue("name");
+        if (!string.IsNullOrEmpty(engineModuleName) && engineModuleName.StartsWith("ModuleEngines"))
         {
           float thrust = 0f;
           ConfigNode ispCurveNode = new ConfigNode();
@@ -341,19 +342,26 @@ namespace VABOrganizer
             FloatCurve ispCurve = new FloatCurve();
             ispCurve.Load(ispCurveNode);
 
-            float mdot = thrust / (ispCurve.Evaluate(0f) * (float)PhysicsGlobals.GravitationalAcceleration);
-            float thrustASL = mdot * (ispCurve.Evaluate(1f) * (float)PhysicsGlobals.GravitationalAcceleration);
+            float ispVac = ispCurve.Evaluate(0f);
+            float ispASL = ispCurve.Evaluate(1f);
+
+            float mdot = 0f;
+            float thrustASL = 0f;
+
+            if (ispVac > 0.0001f)
+            {
+              thrustASL = thrust * (ispASL / ispVac);
+            }
 
             AddSorterKey("ModuleVar_EngineThrustVacuum", thrust, "MAX");
             AddSorterKey("ModuleVar_EngineThrustASL", thrustASL, "MAX");
 
-            AddSorterKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass, "MAX");
             AddSorterKey("ModuleVar_EngineTWRVacuum", thrust / basePart.MinimumMass, "MAX");
+            AddSorterKey("ModuleVar_EngineTWRASL", thrustASL / basePart.MinimumMass, "MAX");
 
-            AddSorterKey("ModuleVar_EngineIspASL", ispCurve.Evaluate(1f), "MAX");
-            AddSorterKey("ModuleVar_EngineIspVacuum", ispCurve.Evaluate(0f), "MAX");
+            AddSorterKey("ModuleVar_EngineIspVacuum", ispVac, "MAX");
+            AddSorterKey("ModuleVar_EngineIspASL", ispASL, "MAX");
           }
-
         }
       }
     }
