@@ -203,6 +203,12 @@ namespace VABOrganizer
     /// </summary>
     public static void Refresh()
     {
+      // Fix for Subassemblies UI crash
+      if (uiPartList.CategorizerFilters == null || uiPartList.CategorizerFilters.Count == 0)
+      {
+        Utils.Log("[Advanced Sorting] CategorizerFilters is empty. Skipping refresh.");
+        return;
+      }
       string currentCategorySort = uiPartList.CategorizerFilters[0].ID;
       Utils.Log($"[Advanced Sorting] Refreshed, new categoryFilter is {currentCategorySort}, from {cachedCategorySort}");
       if (SortWidget != null)
