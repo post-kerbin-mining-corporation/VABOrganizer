@@ -1,4 +1,6 @@
-﻿using KSP.UI.Screens;
+﻿using System;
+using System.Collections.Generic;
+using KSP.UI.Screens;
 using HarmonyLib;
 
 namespace VABOrganizer.HarmonyPatches
@@ -6,6 +8,11 @@ namespace VABOrganizer.HarmonyPatches
   [HarmonyPatch(typeof(EditorPartList))]
   internal class PatchEditorPartList
   {
+    // TODO: Reassess these one-shot diagnostics before publishing once the
+    // remaining modded-install failures have been identified.
+    private static readonly HashSet<string> MissingPartDataWarnings = new HashSet<string>();
+    private static bool dataStoreUnavailableWarningLogged;
+
     /// <summary>
     /// Patch the sorter to add the Bulkhead sorter
     /// </summary>
@@ -30,11 +37,59 @@ namespace VABOrganizer.HarmonyPatches
       {
         if (AdvancedSorting.CurrentAdvancedSort != null)
         {
+          string sortKey = AdvancedSorting.CurrentAdvancedSort.Sorter;
+          if (!ReferenceEquals(AdvancedSortingDataStore.Instance, null))
+          {
+            AdvancedSortingDataStore.Instance.LogSortCoverage(sortKey);
+          }
           partSortProperty.SetValue(__instance,
             new RUIutils.FuncComparer<AvailablePart>((AvailablePart r1, AvailablePart r2) =>
-            RUIutils.SortAscDescPrimarySecondary(asc, AdvancedSortingDataStore.Instance.PartData[r1.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter).CompareTo(AdvancedSortingDataStore.Instance.PartData[r2.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter)), r1.title.CompareTo(r2.title))));
+            RUIutils.SortAscDescPrimarySecondary(asc, CompareAdvancedSortValues(r1, r2, sortKey), string.Compare(r1.title, r2.title, StringComparison.Ordinal))));
         }
       }
+      return true;
+    }
+
+    private static int CompareAdvancedSortValues(AvailablePart first, AvailablePart second, string sortKey)
+    {
+      bool hasFirst = TryGetPartData(first, out AvailablePartData firstData);
+      bool hasSecond = TryGetPartData(second, out AvailablePartData secondData);
+
+      if (hasFirst && hasSecond)
+      {
+        return firstData.GetData(sortKey).CompareTo(secondData.GetData(sortKey));
+      }
+
+      return hasFirst == hasSecond ? 0 : hasFirst ? 1 : -1;
+    }
+
+    private static bool TryGetPartData(AvailablePart part, out AvailablePartData partData)
+    {
+      partData = null;
+      AdvancedSortingDataStore store = AdvancedSortingDataStore.Instance;
+      // Unity objects compare equal to null after destruction even while their
+      // managed fields remain reachable. ReferenceEquals avoids misclassifying
+      // that state as an unpopulated data store during diagnostics/fallback.
+      if (ReferenceEquals(store, null) || store.PartData == null)
+      {
+        if (!dataStoreUnavailableWarningLogged)
+        {
+          dataStoreUnavailableWarningLogged = true;
+          Utils.LogError("[Advanced Sorting]: Part data store is unavailable during comparison");
+        }
+        return false;
+      }
+
+      if (part == null || string.IsNullOrEmpty(part.name) || !store.PartData.TryGetValue(part.name, out partData))
+      {
+        string partName = part == null ? "<null>" : part.name ?? "<unnamed>";
+        if (MissingPartDataWarnings.Add(partName))
+        {
+          Utils.LogWarning($"[Advanced Sorting]: No parsed sort data for editor part '{partName}'; using title ordering for comparisons involving it");
+        }
+        return false;
+      }
+
       return true;
     }
     /// <summary>

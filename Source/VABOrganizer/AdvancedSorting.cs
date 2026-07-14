@@ -174,7 +174,7 @@ namespace VABOrganizer
         if (curMode != uiSorterBase.sortingButtonStates[5])
         {
           Utils.Log($"[Advanced Sorting] In a non-custom mode, clicking button 5");
-          // Just fake click the button
+          // ClickButton invokes SortingCallback synchronously, so select the requested sorter before entering custom mode.
           uiSorterBase.ClickButton(5);
           CurrentAdvancedSort = newType;
           return;
