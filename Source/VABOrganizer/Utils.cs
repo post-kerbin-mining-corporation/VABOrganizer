@@ -38,7 +38,7 @@ namespace VABOrganizer
       }
       catch (NullReferenceException e)
       {
-        Debug.LogError($"Couldn't find {name} in children of {parent.name}");
+        Debug.LogError($"Couldn't find {name} in children of {parent.name}: {e}");
       }
       return result;
     }

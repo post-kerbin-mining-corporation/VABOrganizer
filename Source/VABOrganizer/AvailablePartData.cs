@@ -21,28 +21,31 @@ namespace VABOrganizer
     void Start()
     {
       ConfigNode[] variableRoot = GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_VARIABLE_ROOT_NODE_NAME);
-      if (variableRoot.Length > 0)
+      List<ConfigNode> variableNodes = new List<ConfigNode>();
+      foreach (ConfigNode rootNode in variableRoot)
+      {
+        variableNodes.AddRange(rootNode.GetNodes(Settings.ORGANIZER_VARIABLE_NODE_NAME));
+      }
+      variableNodes.AddRange(GameDatabase.Instance.GetConfigNodes(Settings.ORGANIZER_VARIABLE_NODE_NAME));
+
+      if (variableNodes.Count > 0)
       {
         ConfigVariables = new List<CustomSortVariable>();
         Utils.Log($"[AdvancedSortingDataStore]: Loading variable definitions");
 
-        foreach (ConfigNode rootNode in variableRoot)
+        foreach (ConfigNode varNode in variableNodes)
         {
-          ConfigNode[] variableNodes = rootNode.GetNodes(Settings.ORGANIZER_VARIABLE_NODE_NAME);
-          foreach (ConfigNode varNode in variableNodes)
+          CustomSortVariable data = new CustomSortVariable(varNode);
+          if (!ConfigVariables.Contains(data))
           {
-            CustomSortVariable data = new CustomSortVariable(varNode);
-            if (!ConfigVariables.Contains(data))
-            {
-              ConfigVariables.Add(data);
-            }
-            else
-            {
-              Utils.LogWarning($"[AdvancedSortingDataStore]: Multiple {Settings.ORGANIZER_VARIABLE_NODE_NAME} with the same name ({data.Name}) found, skipping others");
-            }
+            ConfigVariables.Add(data);
           }
-          Utils.Log($"[AdvancedSortingDataStore]: Loaded {ConfigVariables.Count} sorting variable definitions");
+          else
+          {
+            Utils.LogWarning($"[AdvancedSortingDataStore]: Multiple {Settings.ORGANIZER_VARIABLE_NODE_NAME} with the same name ({data.Name}) found, skipping others");
+          }
         }
+        Utils.Log($"[AdvancedSortingDataStore]: Loaded {ConfigVariables.Count} sorting variable definitions");
       }
 
 
