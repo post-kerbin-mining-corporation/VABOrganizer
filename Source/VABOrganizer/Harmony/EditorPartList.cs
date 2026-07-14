@@ -30,12 +30,31 @@ namespace VABOrganizer.HarmonyPatches
       {
         if (AdvancedSorting.CurrentAdvancedSort != null)
         {
+          string sortKey = AdvancedSorting.CurrentAdvancedSort.Sorter;
           partSortProperty.SetValue(__instance,
             new RUIutils.FuncComparer<AvailablePart>((AvailablePart r1, AvailablePart r2) =>
-            RUIutils.SortAscDescPrimarySecondary(asc, AdvancedSortingDataStore.Instance.PartData[r1.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter).CompareTo(AdvancedSortingDataStore.Instance.PartData[r2.name].GetData(AdvancedSorting.CurrentAdvancedSort.Sorter)), r1.title.CompareTo(r2.title))));
+            RUIutils.SortAscDescPrimarySecondary(asc, CompareAdvancedSortValues(r1, r2, sortKey), r1.title.CompareTo(r2.title))));
         }
       }
       return true;
+    }
+
+    /// <summary>
+    /// Compare parsed advanced-sort values without allowing an unparseable or
+    /// dynamically added part to break sorting for the entire editor list.
+    /// </summary>
+    private static int CompareAdvancedSortValues(AvailablePart first, AvailablePart second, string sortKey)
+    {
+      var partData = AdvancedSortingDataStore.Instance.PartData;
+      bool hasFirst = partData.TryGetValue(first.name, out AvailablePartData firstData);
+      bool hasSecond = partData.TryGetValue(second.name, out AvailablePartData secondData);
+
+      if (hasFirst && hasSecond)
+      {
+        return firstData.GetData(sortKey).CompareTo(secondData.GetData(sortKey));
+      }
+
+      return hasFirst == hasSecond ? 0 : hasFirst ? 1 : -1;
     }
     /// <summary>
     /// Patch the part icon update to assign icons to the right categories
