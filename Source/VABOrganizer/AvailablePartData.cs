@@ -11,17 +11,11 @@ namespace VABOrganizer
     public Dictionary<string, AvailablePartData> PartData;
     public static List<CustomSortVariable> ConfigVariables = new List<CustomSortVariable>();
 
-    // TODO: Remove the per-sort coverage diagnostics after the modded-install
-    // failure is understood and verified; they are intentionally one-shot.
-    private readonly HashSet<string> loggedSortCoverage = new HashSet<string>();
-
     public static AdvancedSortingDataStore Instance;
 
     void Awake()
     {
       Instance = this;
-      GameObject.DontDestroyOnLoad(gameObject);
-      Utils.LogWarning("[AdvancedSortingDataStore]: Data store marked persistent");
     }
 
     void Start()
@@ -58,11 +52,6 @@ namespace VABOrganizer
     void OnDestroy()
     {
       GameEvents.OnPartLoaderLoaded.Remove(OnPartLoaderLoaded);
-      Utils.LogWarning($"[AdvancedSortingDataStore]: Data store destroyed with {PartData?.Count ?? 0} indexed parts");
-      if (ReferenceEquals(Instance, this))
-      {
-        Instance = null;
-      }
     }
 
     public void OnPartLoaderLoaded()
@@ -70,58 +59,33 @@ namespace VABOrganizer
       PartData = new Dictionary<string, AvailablePartData>();
       var watch = System.Diagnostics.Stopwatch.StartNew();
       Utils.Log($"[AdvancedSortingDataStore]: Starting part data parse");
-      int duplicateParts = 0;
-      int failedParts = 0;
-      int partsWithoutSortData = 0;
-      int sortValueCount = 0;
       foreach (AvailablePart p in PartLoader.Instance.loadedParts)
       {
-        if (PartData.ContainsKey(p.name))
+        if (p == null || string.IsNullOrEmpty(p.name))
         {
-          duplicateParts++;
-          Utils.LogWarning($"[AdvancedSortingDataStore]: Duplicate loaded part name '{p.name}' ({p.title}); keeping the first entry");
+          Utils.LogWarning("[AdvancedSortingDataStore]: Loaded part has no name, skipping");
           continue;
         }
 
         try
         {
-          AvailablePartData partData = new AvailablePartData(p);
-          PartData.Add(p.name, partData);
-          sortValueCount += partData.DataEntryCount;
-          if (partData.DataEntryCount == 0)
+          if (PartData.ContainsKey(p.name))
           {
-            partsWithoutSortData++;
+            Utils.LogWarning($"[AdvancedSortingDataStore]: Duplicate loaded part name '{p.name}' ({p.title}); keeping the first entry");
+            continue;
           }
+
+          PartData.Add(p.name, new AvailablePartData(p));
         }
         catch (Exception e)
         {
-          failedParts++;
           Utils.LogError($"[AdvancedSortingDataStore]: Failed to parse part '{p.name}' ({p.title}): {e}");
         }
       }
       watch.Stop();
       /// TODO: 7 ms for stock + NFT on Chris' garbage laptop is fine, may need to be optimized later
-      Utils.LogWarning($"[AdvancedSortingDataStore]: Parsed {PartData.Count}/{PartLoader.Instance.loadedParts.Count} unique loaded parts in {watch.ElapsedMilliseconds} ms; duplicates={duplicateParts}, failures={failedParts}, partsWithoutSortData={partsWithoutSortData}, sortValues={sortValueCount}");
+      Utils.Log($"[AdvancedSortingDataStore]: Parsed config data in {watch.ElapsedMilliseconds} ms");
 
-    }
-
-    public void LogSortCoverage(string sortKey)
-    {
-      if (PartData == null || string.IsNullOrEmpty(sortKey) || !loggedSortCoverage.Add(sortKey))
-      {
-        return;
-      }
-
-      int partsWithValue = 0;
-      foreach (AvailablePartData partData in PartData.Values)
-      {
-        if (partData.HasData(sortKey))
-        {
-          partsWithValue++;
-        }
-      }
-
-      Utils.LogWarning($"[AdvancedSortingDataStore]: Sort key '{sortKey}' has explicit values for {partsWithValue}/{PartData.Count} indexed parts; remaining parts use the original zero fallback");
     }
 
   }
@@ -130,16 +94,6 @@ namespace VABOrganizer
   {
     Dictionary<string, float> dataEntries;
     AvailablePart basePart;
-
-    public int DataEntryCount
-    {
-      get { return dataEntries.Count; }
-    }
-
-    public bool HasData(string index)
-    {
-      return dataEntries.ContainsKey(index);
-    }
 
     public float GetData(string index)
     {
